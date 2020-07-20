@@ -4,6 +4,14 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="GPvOwF" name="ZtransformApplet">
     <GROUP id="{5642FFD2-099F-A11E-6A23-B744F912FCB8}" name="Source">
+      <FILE id="iAUofA" name="CoefficientComponent.cpp" compile="1" resource="0"
+            file="Source/CoefficientComponent.cpp"/>
+      <FILE id="a6TZ2C" name="CoefficientComponent.h" compile="0" resource="0"
+            file="Source/CoefficientComponent.h"/>
+      <FILE id="ZLauu9" name="Coefficientlist.cpp" compile="1" resource="0"
+            file="Source/Coefficientlist.cpp"/>
+      <FILE id="IqlByY" name="Coefficientlist.h" compile="0" resource="0"
+            file="Source/Coefficientlist.h"/>
       <FILE id="Fz5gjP" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="oBeh34" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="zPP7C7" name="MainComponent.cpp" compile="1" resource="0"
