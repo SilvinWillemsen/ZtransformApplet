@@ -11,12 +11,13 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Global.h"
 
 //==============================================================================
 /*
 */
 using namespace juce;
-class CoefficientComponent  : public Component
+class CoefficientComponent  : public Component, public TextEditor::Listener
 {
 public:
     CoefficientComponent (int ID, bool aCoeff);
@@ -25,7 +26,9 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
-    double getCoefficient() { return value.getText().getDoubleValue(); };
+    double getCoefficient() { return isA0 ? 1 : value.getText().getDoubleValue(); };
+
+    TextEditor& getTextEditor() { return value; };
     
 private:
     int ID;
@@ -33,6 +36,6 @@ private:
     bool isA0;
     TextEditor value;
     
-    Font font { "Latin Modern Roman", 25.0f, Font::plain };
+    Font font { "CMU Serif", 25.0f, Font::italic };
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CoefficientComponent)
 };

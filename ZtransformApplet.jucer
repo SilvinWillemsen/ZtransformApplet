@@ -4,6 +4,13 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="GPvOwF" name="ZtransformApplet">
     <GROUP id="{5642FFD2-099F-A11E-6A23-B744F912FCB8}" name="Source">
+      <FILE id="vysKR5" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
+      <FILE id="bIGMUH" name="DifferenceEq.cpp" compile="1" resource="0"
+            file="Source/DifferenceEq.cpp"/>
+      <FILE id="HsmkPg" name="DifferenceEq.h" compile="0" resource="0" file="Source/DifferenceEq.h"/>
+      <FILE id="A0jUyV" name="AppComponent.cpp" compile="1" resource="0"
+            file="Source/AppComponent.cpp"/>
+      <FILE id="Br480C" name="AppComponent.h" compile="0" resource="0" file="Source/AppComponent.h"/>
       <FILE id="iAUofA" name="CoefficientComponent.cpp" compile="1" resource="0"
             file="Source/CoefficientComponent.cpp"/>
       <FILE id="a6TZ2C" name="CoefficientComponent.h" compile="0" resource="0"
@@ -13,9 +20,9 @@
       <FILE id="IqlByY" name="Coefficientlist.h" compile="0" resource="0"
             file="Source/Coefficientlist.h"/>
       <FILE id="Fz5gjP" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
-      <FILE id="oBeh34" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="zPP7C7" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
+      <FILE id="oBeh34" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>

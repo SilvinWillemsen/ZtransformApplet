@@ -16,6 +16,8 @@ CoefficientComponent::CoefficientComponent (int ID, bool aCoeff) : ID (ID), aCoe
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
+    value.setName ((aCoeff ? "a" : "b") + String (ID));
+    
     isA0 = (ID == 0 && aCoeff == true) ? true : false;
     if (!isA0)
     {
@@ -24,11 +26,13 @@ CoefficientComponent::CoefficientComponent (int ID, bool aCoeff) : ID (ID), aCoe
         value.setFont (font);
         value.setText ((ID == 0 && !aCoeff) ? "1" : "0");
         value.setMultiLine (false);
+        
     }
 }
 
 CoefficientComponent::~CoefficientComponent()
 {
+    std::cout << ID << " is removed from the heap." << std::endl;
 }
 
 void CoefficientComponent::paint (juce::Graphics& g)
@@ -39,11 +43,14 @@ void CoefficientComponent::paint (juce::Graphics& g)
        You should replace everything in this method with your own
        drawing code..
     */
+//    g.setFont (font.withStyle (Font::italic));
     g.setFont (font);
-    g.setColour (Colours::white);
-    g.drawText ((aCoeff ? "a " : "b ") + String(" =") + (isA0 ? " 1" : ""), getLocalBounds().withX (5), Justification::centredLeft);
-    g.setFont (font.withHeight (18.0f));
-    g.drawText (String (ID), 13, getHeight() * 0.6, 8, 8, Justification::centred);
+    g.setColour (Colour (Global::textColour));
+    g.drawText ((aCoeff ? "a " : "b "), getLocalBounds().withX (5), Justification::centredLeft);
+    g.setFont (font.withHeight (16.0f));
+    g.drawText (String (ID), 14, getHeight() * 0.58, 8, 8, Justification::centred);
+    g.setFont (font);
+    g.drawText (String(" =") + (isA0 ? " 1" : ""), getLocalBounds().withX (23), Justification::centredLeft);
 }
 
 void CoefficientComponent::resized()
@@ -51,6 +58,6 @@ void CoefficientComponent::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
     Rectangle<int> valueArea = getLocalBounds();
-    valueArea.removeFromLeft (getWidth() * 0.4);
+    valueArea.removeFromLeft (getWidth() * 0.47);
     value.setBounds (valueArea.reduced (6, getHeight() * 0.25));
 }

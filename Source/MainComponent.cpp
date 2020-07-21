@@ -5,10 +5,16 @@ MainComponent::MainComponent()
 {
     // Make sure you set the size of the component after
     // you add any child components.
-    coefficientList = std::make_unique<Coefficientlist>();
-    
-    addAndMakeVisible (coefficientList.get());
+    addAndMakeVisible (coefficientList);
 
+    for (int i = 0; i < Global::numCoeffs; ++i)
+        coefficientList.getTextEditor (i).addListener(this);
+        
+    appComponents.add (new DifferenceEq ());
+    appComponents[0]->setData (coefficientList.getData());
+    appComponents[0]->refresh();
+    
+    addAndMakeVisible (appComponents[0]);
     setSize (800, 600);
 
     // Some platforms require permissions to open input channels so request that here
@@ -66,7 +72,12 @@ void MainComponent::releaseResources()
 void MainComponent::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll (Colour (Global::backgroundColour));
+    
+    g.setColour (Colours::black);
+    Rectangle<int> totArea = getLocalBounds();
+    totArea.removeFromRight (100);
+    g.drawRect (totArea.removeFromTop(100), 1);
 
     // You can add your drawing code here!
 }
@@ -76,5 +87,24 @@ void MainComponent::resized()
     // This is called when the MainContentComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
-    coefficientList->setBounds (getLocalBounds().removeFromRight (100));
+    Rectangle<int> totArea = getLocalBounds();
+    coefficientList.setBounds (totArea.removeFromRight (100));
+//    Rectangle<int> leftArea = totArea.removeFromLeft (totArea.getWidth() * 0.5);
+    appComponents[0]->setBounds (totArea.removeFromTop (100).reduced (Global::margin));
+    
+//    for (int i = 0; i < Global::numCoeffs; ++i)
+//        std::cout << coefficientList.getData()[i] << std::endl;
+}
+
+void MainComponent::textEditorTextChanged (TextEditor& textEditor)
+{
+    bool isACoeff = textEditor.getName().startsWith("a");
+    int idx = textEditor.getName().removeCharacters(isACoeff ? "a" : "b").getIntValue() + (isACoeff ? 0 : Global::numCoeffs * 0.5);
+    
+    coefficientList.updateCoeff (idx);
+    for (auto comp : appComponents)
+    {
+        comp->setData (coefficientList.getData());
+        comp->refresh();
+    }
 }

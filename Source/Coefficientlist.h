@@ -11,6 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Global.h"
 #include "CoefficientComponent.h"
 
 using namespace juce;
@@ -26,7 +27,7 @@ public:
     void paint (Graphics&) override;
     void resized() override;
     
-    int getNumRows() override { return numCoeffs; };
+    int getNumRows() override { return Global::numCoeffs; };
 
     void paintListBoxItem (int rowNumber,
                            Graphics& g,
@@ -35,12 +36,21 @@ public:
     
     Component* refreshComponentForRow (int rowNumber, bool isRowSelected, Component* existingComponentToUpdate) override;
 
+    std::vector<double>& getData();
+    
+    void updateCoeff (int idx);
+    
+    void refreshCoefficients();
+    
+    TextEditor& getTextEditor (int idx) { return coeffComps[idx]->getTextEditor(); };
+
 private:
+    
+    std::vector<std::shared_ptr<CoefficientComponent>> coeffComps;
+//    CoefficientComponent coeffCompTest {0, true};
     ListBox list { {}, this };
     
     std::vector<double> coefficients;
-    OwnedArray<CoefficientComponent> coeffComps;
     
-    int numCoeffs = 10;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Coefficientlist)
 };
