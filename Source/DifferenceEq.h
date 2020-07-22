@@ -26,7 +26,7 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
-    void generateEquation() override;
+    void calculate() override;
 
 private:
     String equation;

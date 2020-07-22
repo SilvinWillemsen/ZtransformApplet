@@ -18,11 +18,9 @@ Coefficientlist::Coefficientlist()
     // initialise any special settings that your component needs.
     coefficients.resize (Global::numCoeffs);
     list.setColour (ListBox::backgroundColourId, getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
-    
-//    coeffComps.resize (numCoeffs);
-    
+        
     for (int i = 0; i < Global::numCoeffs; ++i)
-        coeffComps.push_back (std::make_shared<CoefficientComponent> (i < Global::numCoeffs * 0.5 ? i : i - Global::numCoeffs * 0.5, i < Global::numCoeffs * 0.5));
+        coeffComps.add (new CoefficientComponent (i < Global::numCoeffs * 0.5 ? i : i - Global::numCoeffs * 0.5, i < Global::numCoeffs * 0.5));
     
     refreshCoefficients();
     addAndMakeVisible (list);
@@ -30,12 +28,7 @@ Coefficientlist::Coefficientlist()
 
 Coefficientlist::~Coefficientlist()
 {
-    while (coeffComps.size() > 0)
-    {
-        coeffComps[0].reset();
-        coeffComps.erase (coeffComps.begin());
-    }
-    
+    coeffComps.clear();
     list.updateContent();
 
 }
@@ -71,12 +64,12 @@ void Coefficientlist::paintListBoxItem (int rowNumber, Graphics& g, int width, i
 Component* Coefficientlist::refreshComponentForRow (int rowNumber, bool isRowSelected, Component* existingComponentToUpdate)
 {
     if (rowNumber < Global::numCoeffs)
-        return coeffComps[rowNumber].get();
+        return coeffComps[rowNumber];
     
     return nullptr;
 }
 
-std::vector<double>& Coefficientlist::getData()
+std::vector<double>& Coefficientlist::getCoefficients()
 {
     return coefficients;
 }

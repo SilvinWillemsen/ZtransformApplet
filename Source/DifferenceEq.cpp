@@ -30,11 +30,10 @@ void DifferenceEq::paint (juce::Graphics& g)
        You should replace everything in this method with your own
        drawing code..
     */
-    g.setFont (textFont);
-    g.setColour (Colour (Global::textColour));
-    g.drawText (getTitle(), 0, 0, getWidth() * 0.5, 25, Justification::centredLeft);
+    drawTitle (g);
+    drawOutline (g);
     g.setFont (equationFont);
-    g.drawText (equation, 0, 25 + Global::margin, getWidth(), 25, Justification::centredLeft);
+    g.drawText (equation, Global::margin, 30 + Global::margin, getWidth(), 25, Justification::centredLeft);
 }
 
 void DifferenceEq::resized()
@@ -44,21 +43,27 @@ void DifferenceEq::resized()
 
 }
 
-void DifferenceEq::generateEquation()
+void DifferenceEq::calculate()
 {
     equation = "y[n] = ";
     
     // x-component
     for (int i = Global::numCoeffs * 0.5; i < Global::numCoeffs; ++i)
     {
-        if (data[i] == 0)
+        if (coefficients[i] == 0)
             continue;
         
-        if (data[i] < 0)
-            equation = equation.dropLastCharacters(2);
+        // if it is not the first entry
+        if (equation != "y[n] = ")
+        {
+            if (coefficients[i] > 0)
+                equation += " + ";
+            else
+                equation += " - ";
+        }
         
-        if (data[i] != 1)
-            equation += String(data[i]);
+        if (abs(coefficients[i]) != 1)
+            equation += String (abs (coefficients[i]));
         
         equation += "x[n";
         if (i != Global::numCoeffs * 0.5)
@@ -66,33 +71,44 @@ void DifferenceEq::generateEquation()
             equation += " - ";
             equation += String (i - Global::numCoeffs * 0.5);
         }
-        equation += "] ";
-        equation += "+ ";
+        equation += "]";
+        
+        if (i == Global::numCoeffs - 1)
+            break;
+        
     }
     
     // y-component
     for (int i = 1; i < Global::numCoeffs * 0.5; ++i)
     {
-        if (data[i] == 0)
+        if (coefficients[i] == 0)
             continue;
         
-        if (data[i] < 0)
-            equation = equation.dropLastCharacters(2);
+//        if (coefficients[i] < 0)
+//            equation = equation.dropLastCharacters(2);
         
-        if (data[i] != 1)
-            equation += String(data[i]);
+        // if it is not the first entry
+        if (equation != "y[n] = ")
+        {
+            if (coefficients[i] > 0)
+                equation += " + ";
+            else
+                equation += " - ";
+        }
         
+        if (abs (coefficients[i]) != 1)
+            equation += String( abs (coefficients[i]));
 
         equation += "y[n - ";
         if (i != 0)
             equation += String (i);
         equation += "] ";
-        equation += "+ ";
+//        equation += "+ ";
     }
     
     // if there are no values, set y[n] equal to 0
     if (equation ==  "y[n] = ")
         equation += "0";
-    else // otherwise remove the last "+ "
-        equation = equation.dropLastCharacters(2);
+//    else // otherwise remove the last "+ "
+//        equation = equation.dropLastCharacters(2);
 }

@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "Global.h"
+#include <complex>
 
 using namespace juce;
 //==============================================================================
@@ -23,22 +24,26 @@ public:
     AppComponent (String title, bool isEquation);
     ~AppComponent() override;
 
-    void paint (juce::Graphics&) override;
+    void paint (Graphics&) override;
+    void drawTitle (Graphics&);
+    void drawOutline (Graphics&);
+    
     void resized() override;
 
     String& getTitle() { return title; };
-    void setData (std::vector<double>& dataToSet);
+    void setCoefficients (std::vector<double>& coefficientsToSet);
     
     void refresh();
     
-    virtual void generateEquation() {};
+    virtual void calculate() {};
 
 protected:
     Font textFont { 20.0f };
     Font equationFont { "CMU Serif", 25.0f, Font::italic };
 
-    std::vector<double> data;
-
+    std::vector<double> coefficients;
+    std::vector<std::complex<double>> data;
+    
 private:
     String title;
     bool isEquation;

@@ -12,16 +12,15 @@ MainComponent::MainComponent()
         
     appComponents.add (new DifferenceEq ());
     appComponents.add (new TransferFunction ());
+    appComponents.add (new PoleZeroPlot ());
 
     for (auto appComp : appComponents)
     {
-        appComp->setData (coefficientList.getData());
+        appComp->setCoefficients (coefficientList.getCoefficients());
         appComp->refresh();
         addAndMakeVisible (appComp);
 
     }
-    
-    setSize (800, 600);
 
     // Some platforms require permissions to open input channels so request that here
     if (juce::RuntimePermissions::isRequired (juce::RuntimePermissions::recordAudio)
@@ -53,6 +52,12 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     // but be careful - it will be called on the audio thread, not the GUI thread.
 
     // For more details, see the help for AudioProcessor::prepareToPlay()
+    appComponents.insert (appComponents.size() - 1, new FreqResponse (sampleRate));
+    appComponents[appComponents.size()-2]->setCoefficients (coefficientList.getCoefficients());
+    appComponents[appComponents.size()-2]->refresh();
+    addAndMakeVisible (appComponents[appComponents.size()-2]);
+
+    setSize (800, 600);
 }
 
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
@@ -79,14 +84,7 @@ void MainComponent::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (Colour (Global::backgroundColour));
-    
-    g.setColour (Colours::black);
-    Rectangle<int> totArea = getLocalBounds();
-    totArea.removeFromRight (100);
-    
-    for (int i = 0; i < appComponents.size(); ++i )
-        g.drawRect (totArea.removeFromTop(100), 1);
-
+        
     // You can add your drawing code here!
 }
 
@@ -99,15 +97,25 @@ void MainComponent::resized()
     coefficientList.setBounds (totArea.removeFromRight (100));
     
     for (int i = 0; i < appComponents.size(); ++i)
-        appComponents[i]->setBounds (totArea.removeFromTop (100).reduced (Global::margin));
+    {
+        if (appComponents[i]->getTitle() == "Frequency Response")
+            appComponents[i]->setBounds (totArea.removeFromTop (200));
+        else if (appComponents[i]->getTitle() == "Pole-Zero Plot")
+        {
+            appComponents[i]->setBounds (totArea.getX(), totArea.getY(), 200, 200);
+            totArea.removeFromTop (200);
+        } else
+            appComponents[i]->setBounds (totArea.removeFromTop (100));
+
+    }
 
 }
 
 void MainComponent::textEditorTextChanged (TextEditor& textEditor)
 {
     // remove zeros
-    if (textEditor.getText().startsWith("0"))
-        textEditor.setText (textEditor.getText().substring(1, textEditor.getText().length()));
+    if (textEditor.getText() != "0" && textEditor.getText().startsWith("0") && textEditor.getText().substring(1, 2) != ".")
+            textEditor.setText (textEditor.getText().substring(1, textEditor.getText().length()));
     
     bool isACoeff = textEditor.getName().startsWith("a");
     int idx = textEditor.getName().removeCharacters(isACoeff ? "a" : "b").getIntValue() + (isACoeff ? 0 : Global::numCoeffs * 0.5);
@@ -115,7 +123,7 @@ void MainComponent::textEditorTextChanged (TextEditor& textEditor)
     coefficientList.updateCoeff (idx);
     for (auto comp : appComponents)
     {
-        comp->setData (coefficientList.getData());
+        comp->setCoefficients (coefficientList.getCoefficients());
         comp->refresh();
     }
 }

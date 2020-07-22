@@ -5,6 +5,8 @@
 #include "AppComponent.h"
 #include "DifferenceEq.h"
 #include "TransferFunction.h"
+#include "FreqResponse.h"
+#include "PoleZeroPlot.h"
 
 //==============================================================================
 /*

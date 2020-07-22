@@ -21,5 +21,25 @@ public:
     static const uint32 alternateColour = 0xffd3d3d3;
     
     static const int margin = 10;
+    static const int axisMargin = 25;
+
     static const int numCoeffs = 10;
+    
+    static const int fftOrder = 8192;
+    
+    static double limit (double val, double min, double max)
+    {
+        if (val < min)
+        {
+            val = min;
+            return val;
+        }
+        else if (val > max)
+        {
+            val = max;
+            return val;
+        }
+        return val;
+    }
+    
 };

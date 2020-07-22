@@ -36,7 +36,7 @@ public:
     
     Component* refreshComponentForRow (int rowNumber, bool isRowSelected, Component* existingComponentToUpdate) override;
 
-    std::vector<double>& getData();
+    std::vector<double>& getCoefficients();
     
     void updateCoeff (int idx);
     
@@ -46,7 +46,7 @@ public:
     
 private:
     
-    std::vector<std::shared_ptr<CoefficientComponent>> coeffComps;
+    OwnedArray<CoefficientComponent> coeffComps;
 //    CoefficientComponent coeffCompTest {0, true};
     ListBox list { {}, this };
     

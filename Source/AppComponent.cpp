@@ -16,18 +16,31 @@ AppComponent::AppComponent (String title, bool isEquation) : title (title), isEq
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-    if (isEquation)
-        data.resize (Global::numCoeffs);
-    else
-        data.resize (100);
+    coefficients.resize (Global::numCoeffs);
+    if (!isEquation)
+        data.resize (Global::fftOrder);
 }
 
 AppComponent::~AppComponent()
 {
 }
 
-void AppComponent::paint (juce::Graphics& g)
+void AppComponent::paint (Graphics& g)
 {
+}
+
+void AppComponent::drawTitle (Graphics& g)
+{
+    g.setFont (textFont);
+    g.setColour (Colour (Global::textColour));
+    g.drawText (title, Global::margin, Global::margin, getWidth() * 0.5, 25, Justification::centredLeft);
+    g.setFont (equationFont);
+}
+
+void AppComponent::drawOutline (Graphics& g)
+{
+    g.setColour (Colours::black);
+    g.drawRect (getLocalBounds());
 }
 
 void AppComponent::resized()
@@ -37,15 +50,13 @@ void AppComponent::resized()
     
 }
 
-void AppComponent::setData (std::vector<double>& dataToSet)
+void AppComponent::setCoefficients (std::vector<double>& coefficientsToSet)
 {
-    data = dataToSet;
+    coefficients = coefficientsToSet;
 }
 
 void AppComponent::refresh()
 {
-    if (isEquation)
-        generateEquation();
-    
+    calculate();
     repaint();
 }

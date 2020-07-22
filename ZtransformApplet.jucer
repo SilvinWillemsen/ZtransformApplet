@@ -4,11 +4,25 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="GPvOwF" name="ZtransformApplet">
     <GROUP id="{5642FFD2-099F-A11E-6A23-B744F912FCB8}" name="Source">
+      <GROUP id="{3519018C-F8E9-2474-7B39-8EA6C62AA549}" name="PolynomialLibrary">
+        <FILE id="fYUE56" name="Polynomial.cpp" compile="1" resource="0" file="Source/Polynomial.cpp"/>
+        <FILE id="pRfezE" name="Polynomial.h" compile="0" resource="0" file="Source/Polynomial.h"/>
+        <FILE id="kJSxq4" name="PolynomialRootFinder.cpp" compile="1" resource="0"
+              file="Source/PolynomialRootFinder.cpp"/>
+        <FILE id="DduY3d" name="PolynomialRootFinder.h" compile="0" resource="0"
+              file="Source/PolynomialRootFinder.h"/>
+      </GROUP>
+      <FILE id="vysKR5" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
+      <FILE id="FsVbHf" name="PoleZeroPlot.cpp" compile="1" resource="0"
+            file="Source/PoleZeroPlot.cpp"/>
+      <FILE id="C4EYDh" name="PoleZeroPlot.h" compile="0" resource="0" file="Source/PoleZeroPlot.h"/>
+      <FILE id="dg0I9A" name="FreqResponse.cpp" compile="1" resource="0"
+            file="Source/FreqResponse.cpp"/>
+      <FILE id="HSbbtc" name="FreqResponse.h" compile="0" resource="0" file="Source/FreqResponse.h"/>
       <FILE id="QNTPq7" name="TransferFunction.cpp" compile="1" resource="0"
             file="Source/TransferFunction.cpp"/>
       <FILE id="aU8jnd" name="TransferFunction.h" compile="0" resource="0"
             file="Source/TransferFunction.h"/>
-      <FILE id="vysKR5" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
       <FILE id="bIGMUH" name="DifferenceEq.cpp" compile="1" resource="0"
             file="Source/DifferenceEq.cpp"/>
       <FILE id="HsmkPg" name="DifferenceEq.h" compile="0" resource="0" file="Source/DifferenceEq.h"/>
