@@ -4,6 +4,10 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="GPvOwF" name="ZtransformApplet">
     <GROUP id="{5642FFD2-099F-A11E-6A23-B744F912FCB8}" name="Source">
+      <FILE id="QNTPq7" name="TransferFunction.cpp" compile="1" resource="0"
+            file="Source/TransferFunction.cpp"/>
+      <FILE id="aU8jnd" name="TransferFunction.h" compile="0" resource="0"
+            file="Source/TransferFunction.h"/>
       <FILE id="vysKR5" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
       <FILE id="bIGMUH" name="DifferenceEq.cpp" compile="1" resource="0"
             file="Source/DifferenceEq.cpp"/>

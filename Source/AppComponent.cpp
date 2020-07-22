@@ -41,3 +41,11 @@ void AppComponent::setData (std::vector<double>& dataToSet)
 {
     data = dataToSet;
 }
+
+void AppComponent::refresh()
+{
+    if (isEquation)
+        generateEquation();
+    
+    repaint();
+}

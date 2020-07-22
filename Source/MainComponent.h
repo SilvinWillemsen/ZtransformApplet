@@ -4,13 +4,15 @@
 #include "Coefficientlist.h"
 #include "AppComponent.h"
 #include "DifferenceEq.h"
+#include "TransferFunction.h"
 
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent  : public juce::AudioAppComponent, public TextEditor::Listener
+class MainComponent  : public juce::AudioAppComponent,
+public TextEditor::Listener
 {
 public:
     //==============================================================================
@@ -27,6 +29,8 @@ public:
     void resized() override;
 
     void textEditorTextChanged (TextEditor& textEditor) override;
+    
+    void mouseDown (const MouseEvent& e) override;
 
 private:
     //==============================================================================

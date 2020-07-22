@@ -11,10 +11,16 @@ MainComponent::MainComponent()
         coefficientList.getTextEditor (i).addListener(this);
         
     appComponents.add (new DifferenceEq ());
-    appComponents[0]->setData (coefficientList.getData());
-    appComponents[0]->refresh();
+    appComponents.add (new TransferFunction ());
+
+    for (auto appComp : appComponents)
+    {
+        appComp->setData (coefficientList.getData());
+        appComp->refresh();
+        addAndMakeVisible (appComp);
+
+    }
     
-    addAndMakeVisible (appComponents[0]);
     setSize (800, 600);
 
     // Some platforms require permissions to open input channels so request that here
@@ -77,7 +83,9 @@ void MainComponent::paint (juce::Graphics& g)
     g.setColour (Colours::black);
     Rectangle<int> totArea = getLocalBounds();
     totArea.removeFromRight (100);
-    g.drawRect (totArea.removeFromTop(100), 1);
+    
+    for (int i = 0; i < appComponents.size(); ++i )
+        g.drawRect (totArea.removeFromTop(100), 1);
 
     // You can add your drawing code here!
 }
@@ -89,15 +97,18 @@ void MainComponent::resized()
     // update their positions.
     Rectangle<int> totArea = getLocalBounds();
     coefficientList.setBounds (totArea.removeFromRight (100));
-//    Rectangle<int> leftArea = totArea.removeFromLeft (totArea.getWidth() * 0.5);
-    appComponents[0]->setBounds (totArea.removeFromTop (100).reduced (Global::margin));
     
-//    for (int i = 0; i < Global::numCoeffs; ++i)
-//        std::cout << coefficientList.getData()[i] << std::endl;
+    for (int i = 0; i < appComponents.size(); ++i)
+        appComponents[i]->setBounds (totArea.removeFromTop (100).reduced (Global::margin));
+
 }
 
 void MainComponent::textEditorTextChanged (TextEditor& textEditor)
 {
+    // remove zeros
+    if (textEditor.getText().startsWith("0"))
+        textEditor.setText (textEditor.getText().substring(1, textEditor.getText().length()));
+    
     bool isACoeff = textEditor.getName().startsWith("a");
     int idx = textEditor.getName().removeCharacters(isACoeff ? "a" : "b").getIntValue() + (isACoeff ? 0 : Global::numCoeffs * 0.5);
     
@@ -107,4 +118,8 @@ void MainComponent::textEditorTextChanged (TextEditor& textEditor)
         comp->setData (coefficientList.getData());
         comp->refresh();
     }
+}
+
+void MainComponent::mouseDown (const MouseEvent& e)
+{
 }

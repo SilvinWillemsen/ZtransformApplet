@@ -35,6 +35,9 @@ Coefficientlist::~Coefficientlist()
         coeffComps[0].reset();
         coeffComps.erase (coeffComps.begin());
     }
+    
+    list.updateContent();
+
 }
 
 void Coefficientlist::paint (juce::Graphics& g)

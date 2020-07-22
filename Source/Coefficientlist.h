@@ -43,7 +43,7 @@ public:
     void refreshCoefficients();
     
     TextEditor& getTextEditor (int idx) { return coeffComps[idx]->getTextEditor(); };
-
+    
 private:
     
     std::vector<std::shared_ptr<CoefficientComponent>> coeffComps;

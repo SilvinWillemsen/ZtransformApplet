@@ -25,10 +25,9 @@ public:
 
     void paint (juce::Graphics&) override;
     void resized() override;
-    
-    void generateEquation();
 
-    void refresh() override;
+    void generateEquation() override;
+
 private:
     String equation;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DifferenceEq)

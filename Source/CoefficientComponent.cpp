@@ -24,9 +24,9 @@ CoefficientComponent::CoefficientComponent (int ID, bool aCoeff) : ID (ID), aCoe
         addAndMakeVisible (value);
         value.setInputRestrictions (0, "0123456789.eE-");
         value.setFont (font);
-        value.setText ((ID == 0 && !aCoeff) ? "1" : "0");
+        value.setText ((ID == 0 && !aCoeff) ? "1" : "");
         value.setMultiLine (false);
-        
+        value.setTextToShowWhenEmpty ("0", Colours::white);
     }
 }
 

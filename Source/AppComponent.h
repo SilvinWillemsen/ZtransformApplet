@@ -17,7 +17,7 @@ using namespace juce;
 //==============================================================================
 /*
 */
-class AppComponent  : public juce::Component
+class AppComponent  : public Component
 {
 public:
     AppComponent (String title, bool isEquation);
@@ -29,8 +29,10 @@ public:
     String& getTitle() { return title; };
     void setData (std::vector<double>& dataToSet);
     
-    virtual void refresh() {};
+    void refresh();
     
+    virtual void generateEquation() {};
+
 protected:
     Font textFont { 20.0f };
     Font equationFont { "CMU Serif", 25.0f, Font::italic };

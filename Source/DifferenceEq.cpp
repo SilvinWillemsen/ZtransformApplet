@@ -48,6 +48,7 @@ void DifferenceEq::generateEquation()
 {
     equation = "y[n] = ";
     
+    // x-component
     for (int i = Global::numCoeffs * 0.5; i < Global::numCoeffs; ++i)
     {
         if (data[i] == 0)
@@ -69,6 +70,7 @@ void DifferenceEq::generateEquation()
         equation += "+ ";
     }
     
+    // y-component
     for (int i = 1; i < Global::numCoeffs * 0.5; ++i)
     {
         if (data[i] == 0)
@@ -93,10 +95,4 @@ void DifferenceEq::generateEquation()
         equation += "0";
     else // otherwise remove the last "+ "
         equation = equation.dropLastCharacters(2);
-}
-
-void DifferenceEq::refresh()
-{
-    generateEquation();
-    repaint();
 }
