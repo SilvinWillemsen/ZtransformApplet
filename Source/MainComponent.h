@@ -39,6 +39,13 @@ private:
     // Your private member variables go here...
     Coefficientlist coefficientList;
 
-    OwnedArray<AppComponent> appComponents;
+    std::vector<std::shared_ptr<AppComponent>> appComponents;
+    
+    std::shared_ptr<DifferenceEq> differenceEq;
+    std::shared_ptr<TransferFunction> transferFunction;
+    std::shared_ptr<FreqResponse> freqResponse;
+    std::shared_ptr<PoleZeroPlot> poleZeroPlot;
+
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

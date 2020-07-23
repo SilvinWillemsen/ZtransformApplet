@@ -42,5 +42,7 @@ private:
     int yPowersAmount = 0;
 
     bool hasYcomponent = false;
+    
+    float scaling = 1.0f;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TransferFunction)
 };

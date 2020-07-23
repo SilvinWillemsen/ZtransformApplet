@@ -49,12 +49,31 @@ void TransferFunction::paint (juce::Graphics& g)
     xPowerLocs.resize (Global::numCoeffs * 0.5, 0);
     yPowerLocs.resize (Global::numCoeffs * 0.5, 0);
 
+    Font font = equationFont;
+    String equation = "H(z) = ";
+    if (!hasYcomponent)
+    {
+        equation += xEquation;
+    } else {
+        equation += (equationFont.getStringWidthFloat (xEquation) > equationFont.getStringWidthFloat (yEquation) ? xEquation : yEquation);
+    }
+    
+    while (font.getStringWidthFloat (equation) > getWidth() - 2.0 * Global::margin)
+        font = font.withHeight(font.getHeight() - 0.1);
+    scaling = font.getHeight() / equationFont.getHeight();
+    
+    AffineTransform transform;
+    transform = transform.scale (scaling, scaling);
+    transform = transform.translated (Global::margin * (1.0 - scaling), (30 + Global::margin) * (1.0 - scaling));
+    g.addTransform (transform);
+    
     if (!hasYcomponent)
     {
         g.drawText ("H(z) = ", Global::margin, 30 + Global::margin, getWidth(), 25, Justification::centredLeft);
         removePowers (xEquation, true);
         
         // Draw main equation (without powers)
+        
         g.drawText(xEquation, Global::margin + 65, 30 + Global::margin, getWidth(),  25, Justification::centredLeft);
         
         // Draw powers

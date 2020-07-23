@@ -19,6 +19,8 @@ AppComponent::AppComponent (String title, bool isEquation) : title (title), isEq
     coefficients.resize (Global::numCoeffs);
     if (!isEquation)
         data.resize (Global::fftOrder);
+    
+    
 }
 
 AppComponent::~AppComponent()

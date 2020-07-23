@@ -9,16 +9,21 @@ MainComponent::MainComponent()
 
     for (int i = 0; i < Global::numCoeffs; ++i)
         coefficientList.getTextEditor (i).addListener(this);
-        
-    appComponents.add (new DifferenceEq ());
-    appComponents.add (new TransferFunction ());
-    appComponents.add (new PoleZeroPlot ());
+    
+    appComponents.resize (4);
+    appComponents[0] = std::make_shared<DifferenceEq> ();
+    differenceEq = std::static_pointer_cast<DifferenceEq>(appComponents[0]);
+    appComponents[1] = std::make_shared<TransferFunction> ();
+    transferFunction = std::static_pointer_cast<TransferFunction>(appComponents[1]);
+    appComponents[2] = std::make_shared<PoleZeroPlot> ();
+    poleZeroPlot = std::static_pointer_cast<PoleZeroPlot>(appComponents[2]);
 
-    for (auto appComp : appComponents)
+
+    for (int i = 0; i < 3; ++i)
     {
-        appComp->setCoefficients (coefficientList.getCoefficients());
-        appComp->refresh();
-        addAndMakeVisible (appComp);
+        appComponents[i]->setCoefficients (coefficientList.getCoefficients());
+        appComponents[i]->refresh();
+        addAndMakeVisible (appComponents[i].get());
 
     }
 
@@ -52,10 +57,11 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     // but be careful - it will be called on the audio thread, not the GUI thread.
 
     // For more details, see the help for AudioProcessor::prepareToPlay()
-    appComponents.insert (appComponents.size() - 1, new FreqResponse (sampleRate));
-    appComponents[appComponents.size()-2]->setCoefficients (coefficientList.getCoefficients());
-    appComponents[appComponents.size()-2]->refresh();
-    addAndMakeVisible (appComponents[appComponents.size()-2]);
+    appComponents[3] = std::make_shared<FreqResponse> (sampleRate);
+    freqResponse = std::static_pointer_cast<FreqResponse>(appComponents[3]);
+    appComponents[3]->setCoefficients (coefficientList.getCoefficients());
+    appComponents[3]->refresh();
+    addAndMakeVisible (appComponents[3].get());
 
     setSize (800, 600);
 }
@@ -96,18 +102,22 @@ void MainComponent::resized()
     Rectangle<int> totArea = getLocalBounds();
     coefficientList.setBounds (totArea.removeFromRight (100));
     
-    for (int i = 0; i < appComponents.size(); ++i)
-    {
-        if (appComponents[i]->getTitle() == "Frequency Response")
-            appComponents[i]->setBounds (totArea.removeFromTop (200));
-        else if (appComponents[i]->getTitle() == "Pole-Zero Plot")
-        {
-            appComponents[i]->setBounds (totArea.getX(), totArea.getY(), 200, 200);
-            totArea.removeFromTop (200);
-        } else
-            appComponents[i]->setBounds (totArea.removeFromTop (100));
-
-    }
+    Rectangle<int> topHalf = totArea.removeFromTop(300);
+    poleZeroPlot->setBounds (topHalf.removeFromRight(300));
+    differenceEq->setBounds (topHalf.removeFromTop (100));
+    transferFunction->setBounds (topHalf.removeFromTop (100));
+    freqResponse->setBounds(totArea.removeFromTop (300));
+    
+//        if (appComponents[i]->getTitle() == "Frequency Response")
+//            appComponents[i]->setBounds (totArea.removeFromTop (200));
+//        else if (appComponents[i]->getTitle() == "Pole-Zero Plot")
+//        {
+//            appComponents[i]->setBounds (totArea.getX(), totArea.getY(), 200, 200);
+//            totArea.removeFromTop (200);
+//        } else
+//            appComponents[i]->setBounds (totArea.removeFromTop (100));
+//
+//    }
 
 }
 

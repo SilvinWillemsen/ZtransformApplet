@@ -31,23 +31,33 @@ void PoleZeroPlot::paint (juce::Graphics& g)
        You should replace everything in this method with your own
        drawing code..
     */
-
-    double diameter = getWidth() - 2.0 * (Global::axisMargin + Global::margin);
+    drawTitle (g);
+    drawOutline (g);
+    
+    double diameter = getWidth() - 2.0 * (Global::pzAxisMargin + Global::margin);
+    
+    // draw unit circle
     g.setColour(Colours::grey);
-    g.drawEllipse (Global::axisMargin + Global::margin,
-                  Global::axisMargin + Global::margin,
+    g.drawEllipse (Global::pzAxisMargin + Global::margin,
+                  Global::pzAxisMargin + Global::margin,
                   diameter, diameter, 1.0);
     
-    g.drawLine (getWidth() * 0.5, Global::margin + 0.5 * Global::axisMargin, getWidth() * 0.5, getHeight() - Global::margin - 0.5 * Global::axisMargin);
-    g.drawLine (Global::margin + 0.5 * Global::axisMargin, getHeight() * 0.5, getWidth() - Global::margin - 0.5 * Global::axisMargin, getHeight() * 0.5);
+    // draw axes
+    g.drawLine (getWidth() * 0.5, Global::margin + 0.5 * Global::pzAxisMargin, getWidth() * 0.5, getHeight() - Global::margin - 0.5 * Global::pzAxisMargin);
+    g.drawLine (Global::margin + 0.5 * Global::pzAxisMargin, getHeight() * 0.5, getWidth() - Global::margin - 0.5 * Global::pzAxisMargin, getHeight() * 0.5);
     
     g.setColour (Colours::black);
     for (int i = 0; i < highestXOrder; ++i)
-        g.drawEllipse (getWidth() * 0.5 + realZeroVector[i] * diameter * 0.5 - 3,
-                       getHeight() * 0.5 - imaginaryZeroVector[i] * diameter * 0.5 - 3,
+        g.drawEllipse (Global::limit (getWidth() * 0.5 + realZeroVector[i] * diameter * 0.5 - 3, -100, 100),
+                       Global::limit (getHeight() * 0.5 - imaginaryZeroVector[i] * diameter * 0.5 - 3, -100, 100),
                        6, 6, 1);
     
-    g.setFont (textFont.withHeight(16.0f));
+    // draw axes labels
+    g.setFont (equationFont.withHeight(20.0f));
+    
+    g.drawText("Re", getWidth() - Global::margin - 0.5 * Global::pzAxisMargin - 10, getHeight() * 0.5 + 3, 20, 20, Justification::centred);
+    g.drawText("Im", getWidth() * 0.5 + 3, Global::margin + 0.5 * Global::pzAxisMargin - 5, 20, 20, Justification::centred);
+    
     for (int i = 0; i < highestYOrder; ++i)
     {
         float xSize = 4;

@@ -20,10 +20,11 @@ public:
     static const uint32 backgroundColour = 0xffffffff;
     static const uint32 alternateColour = 0xffd3d3d3;
     
-    static const int margin = 10;
-    static const int axisMargin = 25;
+    constexpr static const float margin = 10.0f;
+    constexpr static const float axisMargin = 25.0f;
+    constexpr static const float pzAxisMargin = 30.0f;
 
-    static const int numCoeffs = 10;
+    static const int numCoeffs = 12;
     
     static const int fftOrder = 8192;
     

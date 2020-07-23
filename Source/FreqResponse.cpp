@@ -74,8 +74,8 @@ void FreqResponse::paint (juce::Graphics& g)
                         getHeight() - Global::axisMargin - Global::margin, 1.0f);
         }
     } else {
-        int numLines = floor (fs * 0.5 * 0.0005);
-        double distanceBetweenLines = plotWidth / static_cast<double> (numLines);
+        int numLines = floor (fs * 0.5 * 0.0005) - 1;
+        double distanceBetweenLines = plotWidth / static_cast<double> (numLines + 1);
         
         for (int n = 1; n <= numLines; ++n)
         {
@@ -110,8 +110,8 @@ void FreqResponse::paint (juce::Graphics& g)
             }
         }
     } else {
-        int numLines = floor (fs * 0.5 * 0.0005);
-        double distanceBetweenLines = plotWidth / static_cast<double> (numLines);
+        int numLines = floor (fs * 0.5 * 0.0005) - 1;
+        double distanceBetweenLines = plotWidth / static_cast<double> (numLines + 1);
 
         for (int n = 1; n <= numLines; ++n)
         {
