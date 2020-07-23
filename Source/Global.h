@@ -28,6 +28,12 @@ public:
     
     static const int fftOrder = 8192;
     
+    constexpr static const float bdCompDim = 40;
+    constexpr static const float gainHeight = bdCompDim * 0.75;
+    constexpr static const float gainWidth = bdCompDim * 0.5;
+    
+    constexpr static const float gainFont = 16.0f;
+
     static double limit (double val, double min, double max)
     {
         if (val < min)
@@ -43,4 +49,5 @@ public:
         return val;
     }
     
+    constexpr static const float arrowHeight = 5.0f;
 };

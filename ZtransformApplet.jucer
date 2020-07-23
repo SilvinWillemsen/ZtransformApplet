@@ -13,6 +13,13 @@
               file="Source/PolynomialRootFinder.h"/>
       </GROUP>
       <FILE id="vysKR5" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
+      <FILE id="ILOCH2" name="DiagramComponent.cpp" compile="1" resource="0"
+            file="Source/DiagramComponent.cpp"/>
+      <FILE id="DSuMTG" name="DiagramComponent.h" compile="0" resource="0"
+            file="Source/DiagramComponent.h"/>
+      <FILE id="aADMsK" name="BlockDiagram.cpp" compile="1" resource="0"
+            file="Source/BlockDiagram.cpp"/>
+      <FILE id="CE99o6" name="BlockDiagram.h" compile="0" resource="0" file="Source/BlockDiagram.h"/>
       <FILE id="FsVbHf" name="PoleZeroPlot.cpp" compile="1" resource="0"
             file="Source/PoleZeroPlot.cpp"/>
       <FILE id="C4EYDh" name="PoleZeroPlot.h" compile="0" resource="0" file="Source/PoleZeroPlot.h"/>

@@ -7,7 +7,7 @@
 #include "TransferFunction.h"
 #include "FreqResponse.h"
 #include "PoleZeroPlot.h"
-
+#include "BlockDiagram.h"
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
@@ -45,6 +45,7 @@ private:
     std::shared_ptr<TransferFunction> transferFunction;
     std::shared_ptr<FreqResponse> freqResponse;
     std::shared_ptr<PoleZeroPlot> poleZeroPlot;
+    std::shared_ptr<BlockDiagram> blockDiagram;
 
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)

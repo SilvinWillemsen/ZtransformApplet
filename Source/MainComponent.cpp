@@ -10,16 +10,18 @@ MainComponent::MainComponent()
     for (int i = 0; i < Global::numCoeffs; ++i)
         coefficientList.getTextEditor (i).addListener(this);
     
-    appComponents.resize (4);
+    appComponents.resize (5);
     appComponents[0] = std::make_shared<DifferenceEq> ();
     differenceEq = std::static_pointer_cast<DifferenceEq>(appComponents[0]);
     appComponents[1] = std::make_shared<TransferFunction> ();
     transferFunction = std::static_pointer_cast<TransferFunction>(appComponents[1]);
     appComponents[2] = std::make_shared<PoleZeroPlot> ();
     poleZeroPlot = std::static_pointer_cast<PoleZeroPlot>(appComponents[2]);
+    appComponents[3] = std::make_shared<BlockDiagram> ();
+    blockDiagram = std::static_pointer_cast<BlockDiagram>(appComponents[3]);
 
 
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         appComponents[i]->setCoefficients (coefficientList.getCoefficients());
         appComponents[i]->refresh();
@@ -57,11 +59,11 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     // but be careful - it will be called on the audio thread, not the GUI thread.
 
     // For more details, see the help for AudioProcessor::prepareToPlay()
-    appComponents[3] = std::make_shared<FreqResponse> (sampleRate);
-    freqResponse = std::static_pointer_cast<FreqResponse>(appComponents[3]);
-    appComponents[3]->setCoefficients (coefficientList.getCoefficients());
-    appComponents[3]->refresh();
-    addAndMakeVisible (appComponents[3].get());
+    appComponents[4] = std::make_shared<FreqResponse> (sampleRate);
+    freqResponse = std::static_pointer_cast<FreqResponse>(appComponents[4]);
+    appComponents[4]->setCoefficients (coefficientList.getCoefficients());
+    appComponents[4]->refresh();
+    addAndMakeVisible (appComponents[4].get());
 
     setSize (800, 600);
 }
@@ -104,9 +106,10 @@ void MainComponent::resized()
     
     Rectangle<int> topHalf = totArea.removeFromTop(300);
     poleZeroPlot->setBounds (topHalf.removeFromRight(300));
-    differenceEq->setBounds (topHalf.removeFromTop (100));
-    transferFunction->setBounds (topHalf.removeFromTop (100));
-    freqResponse->setBounds(totArea.removeFromTop (300));
+    differenceEq->setBounds (topHalf.removeFromTop (150));
+    transferFunction->setBounds (topHalf.removeFromTop (150));
+    blockDiagram->setBounds(totArea.removeFromRight(300));
+    freqResponse->setBounds(totArea);
     
 //        if (appComponents[i]->getTitle() == "Frequency Response")
 //            appComponents[i]->setBounds (totArea.removeFromTop (200));

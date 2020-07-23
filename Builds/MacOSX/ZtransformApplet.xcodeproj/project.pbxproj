@@ -65,6 +65,14 @@
 			isa = PBXBuildFile;
 			fileRef = F0F3896A2B91755988298C86;
 		};
+		0D9DE0B337DDC42FEA5E9143 = {
+			isa = PBXBuildFile;
+			fileRef = 7AC1BD2C23ECCC105BB2040D;
+		};
+		4AB21A2EE77D6E0B48BC8D53 = {
+			isa = PBXBuildFile;
+			fileRef = 605C49F351385D49B3676737;
+		};
 		356A0A5BE5232266FC747890 = {
 			isa = PBXBuildFile;
 			fileRef = A308BE27BE233C5EF4C43AD2;
@@ -201,6 +209,13 @@
 			path = "/Users/SilvinW/repositories/newJUCE/JUCE/modules/juce_data_structures";
 			sourceTree = "<absolute>";
 		};
+		2F877CAC41FE158F1F727D4A = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = DiagramComponent.h;
+			path = ../../Source/DiagramComponent.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		3262ED9194F0D2F086C615A3 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
@@ -271,6 +286,13 @@
 			path = RecentFilesMenuTemplate.nib;
 			sourceTree = "SOURCE_ROOT";
 		};
+		605C49F351385D49B3676737 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = BlockDiagram.cpp;
+			path = ../../Source/BlockDiagram.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		650570D54335AFA67791596E = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -311,6 +333,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Coefficientlist.cpp;
 			path = ../../Source/Coefficientlist.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		7AC1BD2C23ECCC105BB2040D = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = DiagramComponent.cpp;
+			path = ../../Source/DiagramComponent.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		7F244DBB2F073EA6574AE22D = {
@@ -396,6 +425,13 @@
 			name = Cocoa.framework;
 			path = System/Library/Frameworks/Cocoa.framework;
 			sourceTree = SDKROOT;
+		};
+		ADF07C731959BE12583BEC5F = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = BlockDiagram.h;
+			path = ../../Source/BlockDiagram.h;
+			sourceTree = "SOURCE_ROOT";
 		};
 		B404352CA8AC629DE1ED3321 = {
 			isa = PBXFileReference;
@@ -574,6 +610,10 @@
 			children = (
 				3D88DE3B5C427B85072CDBA4,
 				F731C828BEAE744F440D09AE,
+				7AC1BD2C23ECCC105BB2040D,
+				2F877CAC41FE158F1F727D4A,
+				605C49F351385D49B3676737,
+				ADF07C731959BE12583BEC5F,
 				A308BE27BE233C5EF4C43AD2,
 				7F244DBB2F073EA6574AE22D,
 				51A820B96D083B26CB965661,
@@ -938,6 +978,8 @@
 			files = (
 				BD5754B82B975AEF48CA9D3B,
 				6EA93C623E785A7CBBE5BF37,
+				0D9DE0B337DDC42FEA5E9143,
+				4AB21A2EE77D6E0B48BC8D53,
 				356A0A5BE5232266FC747890,
 				F35A387DC29746415691BDAF,
 				2FABB6440049EFD07B5B7EFD,
