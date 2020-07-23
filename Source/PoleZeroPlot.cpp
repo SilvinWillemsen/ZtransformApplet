@@ -48,8 +48,8 @@ void PoleZeroPlot::paint (juce::Graphics& g)
     
     g.setColour (Colours::black);
     for (int i = 0; i < highestXOrder; ++i)
-        g.drawEllipse (Global::limit (getWidth() * 0.5 + realZeroVector[i] * diameter * 0.5 - 3, -100, 100),
-                       Global::limit (getHeight() * 0.5 - imaginaryZeroVector[i] * diameter * 0.5 - 3, -100, 100),
+        g.drawEllipse (getWidth() * 0.5 + Global::limit (realZeroVector[i], -100, 100) * diameter * 0.5 - 3,
+                       getHeight() * 0.5 - Global::limit (imaginaryZeroVector[i], -100, 100) * diameter * 0.5 - 3,
                        6, 6, 1);
     
     // draw axes labels
