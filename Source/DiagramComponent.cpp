@@ -12,7 +12,7 @@
 #include "DiagramComponent.h"
 
 //==============================================================================
-DiagramComponent::DiagramComponent (ComponentType type) : type (type)
+DiagramComponent::DiagramComponent (ComponentType type, ArrowType arrowType) : type (type), arrowType (arrowType)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -20,8 +20,24 @@ DiagramComponent::DiagramComponent (ComponentType type) : type (type)
     switch (type)
     {
         case arrow:
-            height = Global::arrowHeight;
+        {
+            switch (arrowType)
+            {
+                case hor:
+                    height = Global::arrowHeight;
+                    break;
+                case vert:
+                    height = Global::vertArrowLength;
+                    break;
+                case cor:
+                    height = 2.0 * Global::vertArrowLength + 0.5 * Global::arrowHeight;
+                    break;
+                case diag:
+                    height = Global::bdCompDim; // should give actual height here as it is variable
+                    break;
+            }
             break;
+        }
         case inOutput:
             height = 25.0f;
             break;
@@ -29,6 +45,9 @@ DiagramComponent::DiagramComponent (ComponentType type) : type (type)
             height = 25.0f;
             break;
         case delay:
+            height = Global::bdCompDim;
+            data = 1;
+            break;
         case add:
             height = Global::bdCompDim;
             break;
@@ -57,8 +76,37 @@ void DiagramComponent::paint (juce::Graphics& g)
     switch (type) {
         case arrow:
         {
-            Line<float> line (0.0, getHeight() * 0.5, getWidth(), getHeight() * 0.5);
-            g.drawArrow (line, 1, Global::arrowHeight, Global::arrowHeight);
+            switch (arrowType)
+            {
+                case hor:
+                {
+                    Line<float> line (0.0, getHeight() * 0.5, getWidth(), getHeight() * 0.5);
+                    g.drawArrow (line, 1, Global::arrowHeight, Global::arrowHeight);
+                    break;
+                }
+                case vert:
+                {
+                    Line<float> line (getWidth() * 0.5, 0, getWidth() * 0.5, getHeight());
+                    g.drawArrow (line, 1, Global::arrowHeight, Global::arrowHeight);
+                    break;
+                }
+                case cor:
+                {
+                    Line<float> line (getWidth() * 0.5, 0.0, getWidth() * 0.5, getHeight() * 0.5 - Global::arrowHeight * 0.5);
+                    Line<float> arrow (getWidth() * 0.5, getHeight() * 0.5 - Global::arrowHeight * 0.5, getWidth(), getHeight() * 0.5 - Global::arrowHeight * 0.5);
+                    g.drawLine (line, 1);
+                    g.drawArrow (arrow, 1, Global::arrowHeight, Global::arrowHeight);
+                    break;
+                }
+                case diag:
+                {
+                    Line<float> line (0.0, getHeight() - 1, getWidth() * 0.5, getHeight() - 1);
+                    Line<float> arrow (getWidth() * 0.5, getHeight() - 1, getWidth() - Global::arrowHeight, 0.0);
+                    g.drawLine (line, 1);
+                    g.drawArrow (arrow, 1, Global::arrowHeight, Global::arrowHeight);
+                    break;
+                }
+            }
             break;
         }
         case inOutput:
@@ -76,9 +124,9 @@ void DiagramComponent::paint (juce::Graphics& g)
         case delay:
         {
             g.drawRect (getLocalBounds(), 1);
-            g.drawText ("z  ", getLocalBounds(), Justification::centred);
+            g.drawText ("z", getWidth() * 0.30 - equationFont.getStringWidthFloat ("z") * 0.5, getHeight() * 0.6 - 12.5 , equationFont.getStringWidthFloat ("z"), 25.0, Justification::centred);
             g.setFont (equationFont.withHeight (16.0f));
-            g.drawText ("-" + String (data), getLocalBounds(), Justification::centred);
+            g.drawText ("-" + String (data), getWidth() * 0.35, getHeight() * 0.45 - 16.0 * 0.5, equationFont.getStringWidthFloat ("-" + String(data)), 16.0, Justification::centred);
             break;
         }
         case add:
@@ -109,3 +157,22 @@ void DiagramComponent::resized()
 
 }
 
+ArrowType DiagramComponent::getArrowType()
+{
+    if (type != arrow)
+    {
+        std::cout << "Component is not an arrow" << std::endl;
+        return arrowType;
+    }
+    return arrowType;
+}
+
+void DiagramComponent::setArrowType (ArrowType arrType)
+{
+    if (type != arrow)
+    {
+        std::cout << "Component is not an arrow" << std::endl;
+        return;
+    }
+    arrowType = arrType;
+}

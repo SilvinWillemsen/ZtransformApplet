@@ -25,6 +25,16 @@ BlockDiagram::BlockDiagram() : AppComponent ("Block Diagram", false)
     components.add (new DiagramComponent (inOutput));
 
     components[components.size() - 1]->setData (1);
+
+    // initialise feedforward and feedback components
+    for (int i = 0; i < Global::numCoeffs - 2; ++i) // a0 and b0 are already included in the top row
+    {
+        components.add (new DiagramComponent (arrow, vert));
+        components.add (new DiagramComponent (delay));
+        components.add (new DiagramComponent (arrow, cor));
+        components.add (new DiagramComponent (gain));
+        components.add (new DiagramComponent (arrow, diag));
+    }
     
     for (int i = 0; i < Global::numCoeffs; ++i)
     {
@@ -68,57 +78,106 @@ void BlockDiagram::resized()
     float curY = topLoc;
     float compWidth;
     
-    bool hasNoDelays = false;
+    bool justOneArrow = false;
     
     bool arrowLengthFlag = false;
+    bool topRow = true;
     int arrowCounter = 0;
     
     for (auto coeffComp : coefficientComps)
         coeffComp->setVisible (false);
     
+    bool changeX = true;
+    int incrementX = 1;
+    float offset = 0; // if vertical arrow
+    
+    int curRow = 0;
     for (auto comp : components)
     {
         comp->setVisible (false);
-
         switch (comp->getType())
         {
             case arrow:
             {
-                ++arrowCounter;
-                if (hasNoDelays)
-                    continue;
-                if (!hasDelays() && !hasGain())
+                if (topRow) // only for toprow
                 {
-                    compWidth = 200;
-                    hasNoDelays = true;
-                }
-                else if (hasGain() && !hasDelays())
-                {
-                    if (arrowCounter == 2)
+                    ++arrowCounter;
+                    if (justOneArrow)
                         continue;
-                    compWidth = 100 - Global::gainWidth * 0.5;
-                }
-                else if (hasGain() && hasDelays())
-                {
-                    if (arrowCounter == 3)
-                        arrowLengthFlag = true;
-                    
-                    if (!arrowLengthFlag)
+                    if (!hasDelays() && !hasGain())
                     {
-                        compWidth = 50 - Global::gainWidth;
+                        compWidth = 200;
+                        justOneArrow = true;
+                    }
+                    else if (hasGain() && !hasDelays())
+                    {
+                        if (arrowCounter == 2)
+                            continue;
+                        compWidth = 100 - Global::gainWidth * 0.5;
+                    }
+                    else if (hasGain() && hasDelays())
+                    {
+                        if (arrowCounter == 3)
+                            arrowLengthFlag = true;
+                        
+                        if (!arrowLengthFlag)
+                        {
+                            compWidth = 50 - Global::gainWidth;
+                        } else {
+                            compWidth = 100 - Global::bdCompDim * 0.5;
+                        }
                     } else {
+                        if (arrowCounter == 2)
+                            continue;
                         compWidth = 100 - Global::bdCompDim * 0.5;
                     }
-                } else {
-                    if (arrowCounter == 2)
-                        continue;
-                    compWidth = 100 - Global::bdCompDim * 0.5;
+                } else { // all other rows
+                    switch (comp->getArrowType())
+                    {
+                        case hor:
+                        {
+                            std::cout << "Shouldn't be horizontal arrow" << std::endl;
+                            break;
+                        }
+                        case vert:
+                        {
+                            // new row!
+                            ++curRow; // only add if y coeffs are also checked
+
+                            curX = Global::bdCompDim; // set curX to be either right after x[n] or right before y[n]
+                            if (!checkForNextCoefficient (curRow)) // if there are no more coefficients
+                                return;
+                            else
+                            {
+                                curY += Global::vertArrowLength * 0.5;
+                            }
+                            compWidth = Global::bdCompDim;
+                            changeX = false;
+                            break;
+                        }
+                        case cor:
+                        {
+                            compWidth = Global::bdCompDim;
+                            curY += Global::vertArrowLength + 0.5 * Global::bdCompDim;
+                            changeX = true;
+                            break;
+                        }
+                        case diag:
+                        {
+                            compWidth = Global::bdCompDim;
+                            break;
+                        }
+                    }
                 }
                 break;
             }
             case inOutput:
             {
                 compWidth = equationFont.getStringWidthFloat (comp->getData() < 0.5 ? "x[n]" : "y[n]") + 3;
+                if (comp->getData() > 0.5)
+                {
+                    topRow = false;
+                }
                 break;
             }
             case equation:
@@ -127,6 +186,12 @@ void BlockDiagram::resized()
                 break;
             }
             case delay:
+            {
+                // changeX = false; // should already be the case
+                curY += 0.5 * (Global::vertArrowLength + Global::bdCompDim);
+                compWidth = comp->getCompHeight();
+                break;
+            }
             case add:
             {
                 if (!hasDelays())
@@ -136,7 +201,7 @@ void BlockDiagram::resized()
             }
             case gain:
             {
-                if (!hasGain())
+                if (topRow && !hasGain())
                     continue;
                 compWidth = Global::gainWidth;
                 break;
@@ -145,33 +210,42 @@ void BlockDiagram::resized()
                 break;
         }
         comp->setVisible (true);
-        comp->setBounds (curX, curY - comp->getCompHeight() * 0.5, compWidth, comp->getCompHeight());
+//        if (comp->getType() == arrow && comp->getArrowType() == vert)
+//            offset = (Global::bdCompDim - Global::arrowHeight) * 0.5;
+        if (comp->getType() == arrow && comp->getArrowType() == diag)
+            comp->setBounds(curX, topLoc + Global::bdCompDim * 0.5, compWidth + Global::arrowHeight, curY - topLoc - Global::bdCompDim * 0.5);
+        else if (comp ->getType() == arrow && comp->getArrowType() == cor) // we want the bottom half of the arrow to stick out a bit
+            comp->setBounds (curX, curY - comp->getCompHeight() * 0.5 + Global::arrowHeight * 0.5, compWidth, comp->getCompHeight() + Global::arrowHeight * 0.5);
+        else
+            comp->setBounds (curX, curY - comp->getCompHeight() * 0.5, compWidth, comp->getCompHeight());
+        
+        offset = 0;
+        // add gain value to the gain arrow
         if (comp->getType() == gain)
         {
             coefficientComps[Global::numCoeffs * 0.5]->setBounds (curX + 0.5 * compWidth - equationFont.getStringWidthFloat (String (coefficients[Global::numCoeffs * 0.5])) * 0.5, curY - comp->getCompHeight() * 0.5 - Global::gainFont * 0.75 , equationFont.getStringWidthFloat (String (coefficients[Global::numCoeffs * 0.5])), Global::gainFont);
             addAndMakeVisible (coefficientComps[Global::numCoeffs * 0.5]);
         }
-        curX += compWidth;
+        curX += changeX ? incrementX * compWidth : 0;
     }
-    
-//    if (!hasDelays())
-//    {
-//        components[1]->setBounds (components[0]->getX() + components[0]->getWidth() + spacing, topLoc - Global::arrowHeight * 0.5, getWidth() - 2.0 * Global::margin -equationFont.getStringWidthFloat ("x[n]y[n]") - 2.0 * spacing, Global::arrowHeight);
-//    }
-//    else
-//    {
-//
-//    }
-//    // y[n]
-//    components[1]->setBounds (components[2]->getX() + components[2]->getWidth() + spacing, topLoc - 25.0f * 0.5, equationFont.getStringWidthFloat (components[1]->getData() ? "y[n]" : "x[n]") + 3, 25.0f);
-
-
 }
 
 void BlockDiagram::calculate()
 {
+    numXGains = 0;
+    numYGains = 0;
     for (int i = 0; i < Global::numCoeffs; ++i)
+    {
         coefficientComps[i]->setData (coefficients[i]);
+        if (coefficients[i] != 0)
+        {
+            if (i > 0 && i < Global::numCoeffs * 0.5) // has a ygain
+                ++numYGains;
+            else if (i > Global::numCoeffs * 0.5)
+                ++numXGains;
+        }
+    }
+    std::cout << numXGains << " " << numYGains << std::endl;
     resized();
 }
 
@@ -192,5 +266,16 @@ bool BlockDiagram::hasGain()
 {
     if (coefficients[Global::numCoeffs * 0.5] != 1)
         return true;
+    return false;
+}
+
+bool BlockDiagram::checkForNextCoefficient (int& idx)
+{
+    for (int i = idx; i < Global::numCoeffs; ++i)
+    {
+        if (coefficients[i] != 0)
+            return true;
+    }
+    
     return false;
 }

@@ -35,6 +35,8 @@ public:
     
     bool hasDelays();
     bool hasGain();
+    
+    bool checkForNextCoefficient (int& idx);
 
 private:
     
@@ -42,5 +44,10 @@ private:
     OwnedArray<DiagramComponent> coefficientComps;
 
     float spacing = 3;
+    
+    int numXGains = 0;
+    int numYGains = 0;
+    
+    bool drawingX = true;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BlockDiagram)
 };

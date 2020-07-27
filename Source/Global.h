@@ -29,6 +29,7 @@ public:
     static const int fftOrder = 8192;
     
     constexpr static const float bdCompDim = 40;
+    constexpr static const float vertArrowLength = bdCompDim * 0.75;
     constexpr static const float gainHeight = bdCompDim * 0.75;
     constexpr static const float gainWidth = bdCompDim * 0.5;
     
