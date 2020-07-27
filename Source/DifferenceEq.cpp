@@ -53,7 +53,7 @@ void DifferenceEq::calculate()
     equation = "y[n] = ";
     
     // x-component
-    for (int i = Global::numCoeffs * 0.5; i < Global::numCoeffs; ++i)
+    for (int i = 0; i < Global::numCoeffs * 0.5; ++i)
     {
         if (coefficients[i] == 0)
             continue;
@@ -71,10 +71,10 @@ void DifferenceEq::calculate()
             equation += String (abs (coefficients[i]));
         
         equation += "x[n";
-        if (i != Global::numCoeffs * 0.5)
+        if (i != 0)
         {
             equation += " - ";
-            equation += String (i - Global::numCoeffs * 0.5);
+            equation += String (i);
         }
         equation += "]";
         
@@ -84,7 +84,7 @@ void DifferenceEq::calculate()
     }
     
     // y-component
-    for (int i = 1; i < Global::numCoeffs * 0.5; ++i)
+    for (int i = Global::numCoeffs * 0.5 + 1; i < Global::numCoeffs; ++i)
     {
         if (coefficients[i] == 0)
             continue;
@@ -102,11 +102,11 @@ void DifferenceEq::calculate()
         }
         
         if (abs (coefficients[i]) != 1)
-            equation += String( abs (coefficients[i]));
+            equation += String (abs (coefficients[i]));
 
         equation += "y[n - ";
         if (i != 0)
-            equation += String (i);
+            equation += String (i - Global::numCoeffs * 0.5);
         equation += "] ";
 //        equation += "+ ";
     }

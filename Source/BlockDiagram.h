@@ -31,8 +31,6 @@ public:
 
     void calculate() override;
     
-    void drawArrow (Graphics& g);
-    
     bool hasDelays();
     bool hasGain();
     
@@ -49,5 +47,6 @@ private:
     int numYGains = 0;
     
     bool drawingX = true;
+    int delayVal = 1;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BlockDiagram)
 };

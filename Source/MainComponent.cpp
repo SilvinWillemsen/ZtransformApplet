@@ -131,7 +131,7 @@ void MainComponent::textEditorTextChanged (TextEditor& textEditor)
             textEditor.setText (textEditor.getText().substring(1, textEditor.getText().length()));
     
     bool isACoeff = textEditor.getName().startsWith("a");
-    int idx = textEditor.getName().removeCharacters(isACoeff ? "a" : "b").getIntValue() + (isACoeff ? 0 : Global::numCoeffs * 0.5);
+    int idx = textEditor.getName().removeCharacters (isACoeff ? "a" : "b").getIntValue() + (isACoeff ? Global::numCoeffs * 0.5 : 0);
     
     coefficientList.updateCoeff (idx);
     for (auto comp : appComponents)

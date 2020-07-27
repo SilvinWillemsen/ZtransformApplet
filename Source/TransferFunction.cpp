@@ -144,7 +144,7 @@ void TransferFunction::calculate()
     xEquation = "";
     
     // x-component
-    for (int i = Global::numCoeffs * 0.5; i < Global::numCoeffs; ++i)
+    for (int i = 0; i < Global::numCoeffs * 0.5; ++i)
     {
         if (coefficients[i] == 0)
             continue;
@@ -158,13 +158,13 @@ void TransferFunction::calculate()
                 xEquation += " - ";
         }
         
-        if (i == Global::numCoeffs * 0.5 || abs(coefficients[i]) != 1)
+        if (i == 0 || abs(coefficients[i]) != 1)
             xEquation += String (abs (coefficients[i]));
         
-        if (i != Global::numCoeffs * 0.5)
+        if (i != 0)
         {
             xEquation += "z^-";
-            xEquation += String (i - Global::numCoeffs * 0.5);
+            xEquation += String (i);
         }
         
     }
@@ -178,7 +178,7 @@ void TransferFunction::calculate()
     yEquation = "1";
     hasYcomponent = true;
     
-    for (int i = 1; i < Global::numCoeffs * 0.5; ++i)
+    for (int i = Global::numCoeffs * 0.5 + 1; i < Global::numCoeffs; ++i)
     {
         if (coefficients[i] == 0)
             continue;
@@ -192,11 +192,11 @@ void TransferFunction::calculate()
         if (abs(coefficients[i]) != 1)
             yEquation += String (abs (coefficients[i]));
         
-        if (i != Global::numCoeffs * 0.5)
-        {
+//        if (i != Global::numCoeffs * 0.5)
+//        {
             yEquation += "z^-";
-            yEquation += String(i);
-        }
+            yEquation += String (i - Global::numCoeffs * 0.5);
+//        }
         
     }
     

@@ -96,11 +96,11 @@ void PoleZeroPlot::findRoots()
 {
     // x roots
     highestXOrder = 0;
-    for (int i = Global::numCoeffs - 1; i >= Global::numCoeffs * 0.5; --i)
+    for (int i = Global::numCoeffs * 0.5 - 1; i >= 0; --i)
     {
         if (coefficients[i] != 0)
         {
-            highestXOrder = i - Global::numCoeffs * 0.5;
+            highestXOrder = i;
             break;
         }
     }
@@ -116,7 +116,7 @@ void PoleZeroPlot::findRoots()
     // invert order of coefficients for Polynomial class
     for (int i = 0; i <= highestXOrder; ++i)
     {
-        xCoeffs[highestXOrder - i] = coefficients [Global::numCoeffs * 0.5 + i];
+        xCoeffs[highestXOrder - i] = coefficients [i];
     }
     
     Polynomial xPolynomial (&xCoeffs[0], highestXOrder);
@@ -127,11 +127,11 @@ void PoleZeroPlot::findRoots()
     
     // y roots
     highestYOrder = 0;
-    for (int i = Global::numCoeffs * 0.5 - 1; i >= 0; --i)
+    for (int i = Global::numCoeffs - 1; i >= Global::numCoeffs * 0.5; --i)
     {
         if (coefficients[i] != 0)
         {
-            highestYOrder = i;
+            highestYOrder = i - Global::numCoeffs * 0.5;
             break;
         }
     }
@@ -149,7 +149,7 @@ void PoleZeroPlot::findRoots()
     for (int i = 0; i < highestYOrder; ++i)
     {
         // also flip the sign of the coefficients in the case of y
-        yCoeffs[highestYOrder - i - 1] = -coefficients[i + 1];
+        yCoeffs[highestYOrder - i - 1] = -coefficients[i + 1 - Global::numCoeffs * 0.5];
     }
 
     Polynomial yPolynomial (&yCoeffs[0], highestYOrder);
@@ -161,7 +161,7 @@ void PoleZeroPlot::findRoots()
 
 void PoleZeroPlot::invertYCoeffs()
 {
-    for (int i = 1; i < Global::numCoeffs * 0.5; ++i)
+    for (int i = Global::numCoeffs * 0.5 + 1; i < Global::numCoeffs; ++i)
     {
         coefficients[i] = -coefficients[i];
     }

@@ -66,6 +66,6 @@ private:
     float height;
     
     ArrowType arrowType = hor;
-    bool isACoeff;
+    bool isACoeff = false;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DiagramComponent)
 };

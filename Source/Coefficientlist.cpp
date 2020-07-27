@@ -20,7 +20,7 @@ Coefficientlist::Coefficientlist()
     list.setColour (ListBox::backgroundColourId, getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
         
     for (int i = 0; i < Global::numCoeffs; ++i)
-        coeffComps.add (new CoefficientComponent (i < Global::numCoeffs * 0.5 ? i : i - Global::numCoeffs * 0.5, i < Global::numCoeffs * 0.5));
+        coeffComps.add (new CoefficientComponent (i < Global::numCoeffs * 0.5 ? i : i - Global::numCoeffs * 0.5, i >= Global::numCoeffs * 0.5));
     
     refreshCoefficients();
     addAndMakeVisible (list);

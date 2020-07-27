@@ -92,16 +92,19 @@ void DiagramComponent::paint (juce::Graphics& g)
                 }
                 case cor:
                 {
-                    Line<float> line (getWidth() * 0.5, 0.0, getWidth() * 0.5, getHeight() * 0.5 - Global::arrowHeight * 0.5);
-                    Line<float> arrow (getWidth() * 0.5, getHeight() * 0.5 - Global::arrowHeight * 0.5, getWidth(), getHeight() * 0.5 - Global::arrowHeight * 0.5);
+                    Line<float> line (getWidth() * 0.5, 0.0, getWidth() * 0.5, getHeight() * 0.5 - Global::arrowHeight * 0.5 - 1);
+                    Line<float> arrow (getWidth() * 0.5, getHeight() * 0.5 - Global::arrowHeight * 0.5 - 1, isACoeff ? 0.0 : getWidth(), getHeight() * 0.5 - Global::arrowHeight * 0.5 - 1);
                     g.drawLine (line, 1);
-                    g.drawArrow (arrow, 1, Global::arrowHeight, Global::arrowHeight);
+                    if (data < -0.5) // then there is no gain value
+                        g.drawLine (arrow, 1);
+                    else
+                        g.drawArrow (arrow, 1, Global::arrowHeight, Global::arrowHeight);
                     break;
                 }
                 case diag:
                 {
-                    Line<float> line (0.0, getHeight() - 1, getWidth() * 0.5, getHeight() - 1);
-                    Line<float> arrow (getWidth() * 0.5, getHeight() - 1, getWidth() - Global::arrowHeight, 0.0);
+                    Line<float> line (isACoeff ? getWidth() : 0.0, getHeight() - 1, getWidth() * 0.5, getHeight() - 1);
+                    Line<float> arrow (getWidth() * 0.5, getHeight() - 1, isACoeff ? Global::arrowHeight : (getWidth() - Global::arrowHeight), 0.0);
                     g.drawLine (line, 1);
                     g.drawArrow (arrow, 1, Global::arrowHeight, Global::arrowHeight);
                     break;
@@ -138,6 +141,13 @@ void DiagramComponent::paint (juce::Graphics& g)
         }
         case gain:
         {
+            
+            if (isACoeff)
+            {
+                AffineTransform transform;
+                transform = transform.rotated(double_Pi, getWidth() * 0.5, getHeight() * 0.5);
+                g.addTransform (transform);
+            }
             g.drawLine (1, 1, 1, getHeight() - 1);
             g.drawLine (1, 1, getWidth() - 1, getHeight() * 0.5);
             g.drawLine (1, getHeight() - 1, getWidth() - 1, getHeight() * 0.5);

@@ -191,16 +191,16 @@ void FreqResponse::calculate()
         
         for (int j = 0; j < Global::numCoeffs * 0.5; ++j)
         {
-            if (coefficients[j + Global::numCoeffs * 0.5] == 0)
+            if (coefficients[j] == 0)
                 continue;
-            numerator += coefficients[j + Global::numCoeffs * 0.5] * exp(-i * omega * std::complex<double>(j));
+            numerator += coefficients[j] * exp(-i * omega * std::complex<double>(j));
             
         }
         for (int j = 1; j < Global::numCoeffs * 0.5; ++j)
         {
-            if (coefficients[j] == 0)
+            if (coefficients[j + Global::numCoeffs * 0.5] == 0)
                 continue;
-            denominator -= coefficients[j] * exp(-i * omega * std::complex<double>(j));
+            denominator -= coefficients[j + Global::numCoeffs * 0.5] * exp(-i * omega * std::complex<double>(j));
         }
         data[k-1] = numerator / denominator;
     }
