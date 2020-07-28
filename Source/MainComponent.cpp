@@ -92,11 +92,9 @@ void MainComponent::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (Colour (Global::backgroundColour));
-    int blockDiagX = getWidth() - 400;
-    int blockDiagY = getHeight() - 300;
-    g.drawRect (blockDiagX, blockDiagY, 300, 300);
+    g.drawRect (blockDiagram->getBounds());
     g.setFont (Font (20.0f));
-    g.drawText (blockDiagram->getTitle(), blockDiagX + Global::margin, blockDiagY + Global::margin, 300 - Global::margin, 20.0, Justification::centredLeft);
+    g.drawText (blockDiagram->getTitle(), blockDiagram->getX() + Global::margin, blockDiagram->getY() + Global::margin, blockDiagram->getWidth(), 20.0, Justification::centredLeft);
     // You can add your drawing code here!
 }
 
@@ -108,11 +106,11 @@ void MainComponent::resized()
     Rectangle<int> totArea = getLocalBounds();
     coefficientList.setBounds (totArea.removeFromRight (100));
     
-    Rectangle<int> topHalf = totArea.removeFromTop(300);
-    poleZeroPlot->setBounds (topHalf.removeFromRight(300));
-    differenceEq->setBounds (topHalf.removeFromTop (150));
-    transferFunction->setBounds (topHalf.removeFromTop (150));
-    blockDiagram->setBounds (totArea.removeFromRight(300).withHeight (getHeight() * 2.0));
+    Rectangle<int> leftHalf = totArea.removeFromLeft(totArea.getWidth() * 0.5);
+    differenceEq->setBounds (leftHalf.removeFromTop (100));
+    transferFunction->setBounds (leftHalf.removeFromTop (100));
+    blockDiagram->setBounds (leftHalf.withHeight (leftHalf.getHeight() * 2.0));
+    poleZeroPlot->setBounds (totArea.removeFromTop(totArea.getWidth()));
     freqResponse->setBounds(totArea);
     
 //        if (appComponents[i]->getTitle() == "Frequency Response")

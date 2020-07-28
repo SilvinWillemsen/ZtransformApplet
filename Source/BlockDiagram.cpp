@@ -123,14 +123,14 @@ void BlockDiagram::resized()
                         continue;
                     if (!hasDelays() && !hasGain())
                     {
-                        compWidth = 200;
+                        compWidth = 2.0 / 3.0 * getWidth();
                         justOneArrow = true;
                     }
                     else if (hasGain() && !hasDelays())
                     {
                         if (arrowCounter == 2)
                             continue;
-                        compWidth = 100 - Global::gainWidth * 0.5;
+                        compWidth = 1.0 / 3.0 * getWidth() - Global::gainWidth * 0.5;
                     }
                     else if (hasGain() && hasDelays())
                     {
@@ -141,10 +141,10 @@ void BlockDiagram::resized()
                                 compWidth = Global::bdCompDim - 5;
                                 break;
                             case 2:
-                                compWidth = Global::bdCompDim - Global::gainWidth + 5;
+                                compWidth = 1.0 / 3.0 * getWidth() - (Global::bdCompDim - 5) - Global::gainWidth - Global::bdCompDim * 0.5;
                                 break;
                             case 3:
-                                compWidth = 100 - Global::bdCompDim * 0.5;
+                                compWidth = 1.0 / 3.0 * getWidth() - Global::bdCompDim * 0.5;
                                 break;
                         }
                         
@@ -160,7 +160,7 @@ void BlockDiagram::resized()
                     } else {
                         if (arrowCounter == 2)
                             continue;
-                        compWidth = 100 - Global::bdCompDim * 0.5;
+                        compWidth = 1.0 / 3.0 * getWidth() - Global::bdCompDim * 0.5;
                     }
                 } else { // all others
                     switch (comp->getArrowType())
@@ -172,15 +172,13 @@ void BlockDiagram::resized()
                         }
                         case vert:
                         {
-                            curX = drawingX ? Global::bdCompDim + 5 : 215; // set curX to be either right after x[n] or right before y[n]
+                            curX = drawingX ? Global::bdCompDim + 5 : 2.0 / 3.0 * getWidth() + 15; // set curX to be either right after x[n] or right before y[n]
                             bool drawingXPrev = drawingX;
                             if (!checkForNextCoefficient (curCoeffIdx)) // if there are no more coefficients
                             {
-//                                float test = Global::vertArrowLength + Global::bdCompDim + Global::vertArrowLength + Global::bdCompDim + Global::gainHeight;
-//                                std::cout << std::max (numXDelaysDrawn, numYDelaysDrawn) << std::endl;
-//                                float test2 = (visibleHeight - (topLoc - 0.5 * Global::bdCompDim)) / (visibleHeight - (topLoc - 0.5 * Global::bdCompDim) + (test * (std::max(0, std::max (numXDelaysDrawn, numYDelaysDrawn) - 2))));
-                                float normalHeight = Global::bdCompDim * 0.5 + (2.0 * Global::vertArrowLength + Global::bdCompDim) * 2 + Global::gainHeight;
-                                float curHeight = normalHeight + std::max(0, std::max (numXDelaysDrawn, numYDelaysDrawn) - 2) * (2.0 * Global::vertArrowLength + Global::bdCompDim);
+                                int delaysFit = 3;
+                                float normalHeight = Global::bdCompDim * 0.5 + (2.0 * Global::vertArrowLength + Global::bdCompDim) * delaysFit + Global::gainHeight;
+                                float curHeight = normalHeight + std::max(0, std::max (numXDelaysDrawn, numYDelaysDrawn) - delaysFit) * (2.0 * Global::vertArrowLength + Global::bdCompDim);
                                 scaling = normalHeight / curHeight;
                                 AffineTransform transform;
                                 transform = transform.scale (scaling, scaling, getX() + 0.5 * getWidth(), getY() + (topLoc - 0.5 * Global::bdCompDim));
@@ -193,7 +191,7 @@ void BlockDiagram::resized()
                                 if (drawingX != drawingXPrev) // if drawingX changed, we're now drawing the feedback
                                 {
                                     incrementX = -1;
-                                    curX = 215;
+                                    curX = 2.0 / 3.0 * getWidth() + 15;
                                     curY = topLoc;
                                 }
                                 curY += Global::vertArrowLength * 0.5;
@@ -225,12 +223,12 @@ void BlockDiagram::resized()
                         {
                             if (!drawingX)
                                 if (coefficients[curCoeffIdx] != 1)
-                                    curX -= (Global::gainWidth + 3);
+                                    curX -= (1.0 / 3.0 * getWidth() - (Global::bdCompDim - 5) - Global::gainWidth - Global::gainWidth + 3);
                                 else
-                                    curX += (2.0 * Global::gainWidth - 3);
+                                    curX += (1.0 / 3.0 * getWidth() - (Global::bdCompDim - 5) - 3.0 * Global::gainWidth - 7);
                             else
                                 curX -= 1;
-                            compWidth = Global::bdCompDim;
+                            compWidth = 1.0 / 3.0 * getWidth() - (Global::bdCompDim - 5) - Global::gainWidth;
                             break;
                         }
                     }

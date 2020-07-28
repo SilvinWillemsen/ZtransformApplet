@@ -38,7 +38,7 @@ void DifferenceEq::paint (juce::Graphics& g)
         font = font.withHeight(font.getHeight() - 0.1);
     
     g.setFont (font);
-    g.drawText (equation, Global::margin, 30 + Global::margin, getWidth() - 2.0 * Global::margin, 25, Justification::centredLeft);
+    g.drawText (equation, Global::margin, (getHeight() - Global::margin - 25) * 0.5 + Global::margin + 25 - font.getHeight(), getWidth() - 2.0 * Global::margin, font.getHeight(), Justification::centredLeft);
 }
 
 void DifferenceEq::resized()

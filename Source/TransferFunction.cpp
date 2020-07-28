@@ -63,25 +63,25 @@ void TransferFunction::paint (juce::Graphics& g)
     scaling = font.getHeight() / equationFont.getHeight();
     
     AffineTransform transform;
-    transform = transform.scale (scaling, scaling);
-    transform = transform.translated (Global::margin * (1.0 - scaling), (30 + Global::margin) * (1.0 - scaling));
+    transform = transform.scale (scaling, scaling, Global::margin, getHeight() * 0.5);
+//    transform = transform.translated (Global::margin * (1.0 - scaling), (30 + Global::margin) * (1.0 - scaling));
     g.addTransform (transform);
     
     if (!hasYcomponent)
     {
-        g.drawText ("H(z) = ", Global::margin, 30 + Global::margin, getWidth(), 25, Justification::centredLeft);
+        g.drawText ("H(z) = ", Global::margin, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5, getWidth(), 25, Justification::centredLeft, false);
         removePowers (xEquation, true);
         
         // Draw main equation (without powers)
         
-        g.drawText(xEquation, Global::margin + 65, 30 + Global::margin, getWidth(),  25, Justification::centredLeft);
+        g.drawText (xEquation, Global::margin + 65, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5, getWidth() * 1.0 / scaling,  25, Justification::centredLeft, false);
         
         // Draw powers
         g.setFont (equationFont.withHeight(16.0f));
         for (int i = 0; i < xPowersAmount; ++i)
             g.drawText("-" + String (xPowers[i]),
                        Global::margin + 65 + xPowerLocs[i],
-                       30 + Global::margin,
+                       (getHeight() + Global::margin + 12.5) * 0.5 - 12.5,
                        equationFont.getStringWidthFloat("-" + String (xPowers[i])),
                        16,
                        Justification::centred);
@@ -103,15 +103,15 @@ void TransferFunction::paint (juce::Graphics& g)
             xPowersOffset = (equationFont.getStringWidthFloat (xEquation) + equationFont.getStringWidthFloat (yEquation)) * 0.5 - equationFont.getStringWidthFloat (xEquation);
         
         // Draw main equation (without powers)
-        g.drawText ("H(z) = ", Global::margin, 40 + Global::margin, getWidth(), 25, Justification::centredLeft);
-        g.drawText(xEquation, 65 + Global::margin, 25 + Global::margin, totStringWidth, 25, Justification::centred);
+        g.drawText ("H(z) = ", Global::margin, 40 + Global::margin, getWidth(), 25, Justification::centredLeft, false);
+        g.drawText(xEquation, 65 + Global::margin, 25 + Global::margin, totStringWidth, 25, Justification::centred, false);
         g.setColour (Colours::black);
         g.drawLine (Global::margin + 65,
                     40 + Global::margin + 25 * 0.5,
                     80 + totStringWidth + Global::margin,
                     40 + Global::margin + 25 * 0.5);
         
-        g.drawText(yEquation, Global::margin + 65, 55 + Global::margin, totStringWidth, 25, Justification::centred);
+        g.drawText(yEquation, Global::margin + 65, 55 + Global::margin, totStringWidth, 25, Justification::centred, false);
         
         // Draw powers
         g.setFont (equationFont.withHeight(16.0f));
