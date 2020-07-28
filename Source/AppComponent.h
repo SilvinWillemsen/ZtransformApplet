@@ -36,7 +36,7 @@ public:
     void refresh();
     
     virtual void calculate() {};
-
+    
 protected:
     Font textFont { 20.0f };
     Font equationFont { "CMU Serif", 25.0f, Font::italic };

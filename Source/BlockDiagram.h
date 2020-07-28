@@ -36,6 +36,7 @@ public:
     
     bool checkForNextCoefficient (int& idx);
 
+    float getScaling() { return scaling; };
 private:
     
     OwnedArray<DiagramComponent> components;
@@ -48,5 +49,8 @@ private:
     
     bool drawingX = true;
     int delayVal = 1;
+    float scaling = 1;
+    
+    float visibleHeight = 300;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BlockDiagram)
 };

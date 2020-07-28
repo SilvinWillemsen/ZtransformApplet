@@ -61,8 +61,9 @@ void BlockDiagram::paint (juce::Graphics& g)
        drawing code..
     */
 
-    drawTitle (g);
-    drawOutline (g);
+    // as this component scales fully, we're drawing this separately
+//    drawTitle (g);
+//    drawOutline (g);
 }
 
 void BlockDiagram::resized()
@@ -70,10 +71,9 @@ void BlockDiagram::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
     
-    float topLoc = 80;
+    float topLoc = 60;
     float centerLoc = getWidth() * 0.5;
     
-    // x[n]
     float curX = Global::margin;
     float curY = topLoc;
     float compWidth;
@@ -94,6 +94,7 @@ void BlockDiagram::resized()
     drawingX = true;
     
     bool noGainFlag = false;
+    
     // reset visibility and "a-coefficient-ness"
     for (auto comp : components)
     {
@@ -103,6 +104,10 @@ void BlockDiagram::resized()
         comp->setACoeff (false);
     }
     
+    int numXDelaysDrawn = 0;
+    int numYDelaysDrawn = 0;
+    
+    this->setPaintingIsUnclipped (true);
     for (auto comp : components)
     {
         if (!drawingX)
@@ -170,7 +175,19 @@ void BlockDiagram::resized()
                             curX = drawingX ? Global::bdCompDim + 5 : 215; // set curX to be either right after x[n] or right before y[n]
                             bool drawingXPrev = drawingX;
                             if (!checkForNextCoefficient (curCoeffIdx)) // if there are no more coefficients
+                            {
+//                                float test = Global::vertArrowLength + Global::bdCompDim + Global::vertArrowLength + Global::bdCompDim + Global::gainHeight;
+//                                std::cout << std::max (numXDelaysDrawn, numYDelaysDrawn) << std::endl;
+//                                float test2 = (visibleHeight - (topLoc - 0.5 * Global::bdCompDim)) / (visibleHeight - (topLoc - 0.5 * Global::bdCompDim) + (test * (std::max(0, std::max (numXDelaysDrawn, numYDelaysDrawn) - 2))));
+                                float normalHeight = Global::bdCompDim * 0.5 + (2.0 * Global::vertArrowLength + Global::bdCompDim) * 2 + Global::gainHeight;
+                                float curHeight = normalHeight + std::max(0, std::max (numXDelaysDrawn, numYDelaysDrawn) - 2) * (2.0 * Global::vertArrowLength + Global::bdCompDim);
+                                scaling = normalHeight / curHeight;
+                                AffineTransform transform;
+                                transform = transform.scale (scaling, scaling, getX() + 0.5 * getWidth(), getY() + (topLoc - 0.5 * Global::bdCompDim));
+                                setTransform (transform);
+//                                this->setBounds (getBounds().withHeight (getHeight() * 0.5));
                                 return;
+                            }
                             else
                             {
                                 if (drawingX != drawingXPrev) // if drawingX changed, we're now drawing the feedback
@@ -180,6 +197,10 @@ void BlockDiagram::resized()
                                     curY = topLoc;
                                 }
                                 curY += Global::vertArrowLength * 0.5;
+                                if (drawingX)
+                                    ++numXDelaysDrawn;
+                                else
+                                    ++numYDelaysDrawn;
                             }
                             compWidth = Global::bdCompDim;
                             changeX = false;
