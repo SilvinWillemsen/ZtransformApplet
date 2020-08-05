@@ -16,6 +16,7 @@ AppComponent::AppComponent (String title, bool isEquation) : title (title), isEq
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
+    equationFont.setHeight (25.0f);
     coefficients.resize (Global::numCoeffs);
     if (!isEquation)
         data.resize (Global::fftOrder);
@@ -35,7 +36,7 @@ void AppComponent::drawTitle (Graphics& g)
 {
     g.setFont (textFont);
     g.setColour (Colour (Global::textColour));
-    g.drawText (title, Global::margin, Global::margin, getWidth() * 0.5, 25, Justification::centredLeft);
+    g.drawText (title, Global::margin, Global::margin, getWidth() - Global::margin * 2.0, 25, Justification::centredLeft);
     g.setFont (equationFont);
 }
 

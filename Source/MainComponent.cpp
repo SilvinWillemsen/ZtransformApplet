@@ -3,14 +3,13 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-    // Make sure you set the size of the component after
-    // you add any child components.
+    
     addAndMakeVisible (coefficientList);
 
     for (int i = 0; i < Global::numCoeffs; ++i)
         coefficientList.getTextEditor (i).addListener(this);
     
-    appComponents.resize (5);
+    appComponents.resize (7);
     appComponents[0] = std::make_shared<DifferenceEq> ();
     differenceEq = std::static_pointer_cast<DifferenceEq>(appComponents[0]);
     appComponents[1] = std::make_shared<TransferFunction> ();
@@ -19,9 +18,11 @@ MainComponent::MainComponent()
     poleZeroPlot = std::static_pointer_cast<PoleZeroPlot>(appComponents[2]);
     appComponents[3] = std::make_shared<BlockDiagram> ();
     blockDiagram = std::static_pointer_cast<BlockDiagram>(appComponents[3]);
+    appComponents[4] = std::make_shared<AudioPlayer> ();
+    audioPlayer = std::static_pointer_cast<AudioPlayer>(appComponents[4]);
 
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 5; ++i)
     {
         appComponents[i]->setCoefficients (coefficientList.getCoefficients());
         appComponents[i]->refresh();
@@ -39,7 +40,7 @@ MainComponent::MainComponent()
     else
     {
         // Specify the number of input and output channels that we want to open
-        setAudioChannels (2, 2);
+        setAudioChannels (0, 2);
     }
 }
 
@@ -59,13 +60,20 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     // but be careful - it will be called on the audio thread, not the GUI thread.
 
     // For more details, see the help for AudioProcessor::prepareToPlay()
-    appComponents[4] = std::make_shared<FreqResponse> (sampleRate);
-    freqResponse = std::static_pointer_cast<FreqResponse>(appComponents[4]);
-    appComponents[4]->setCoefficients (coefficientList.getCoefficients());
-    appComponents[4]->refresh();
-    addAndMakeVisible (appComponents[4].get());
+    int idx = appComponents.size() - 2;
+    appComponents[idx] = std::make_shared<FreqResponse> (sampleRate);
+    freqResponse = std::static_pointer_cast<FreqResponse>(appComponents[idx]);
+    appComponents[idx]->setCoefficients (coefficientList.getCoefficients());
+    appComponents[idx]->refresh();
+    addAndMakeVisible (appComponents[idx].get());
 
-    setSize (800, 600);
+    appComponents[idx+1] = std::make_shared<PhaseResponse> (sampleRate);
+    phaseResponse = std::static_pointer_cast<PhaseResponse>(appComponents[idx+1]);
+    appComponents[idx+1]->setCoefficients (coefficientList.getCoefficients());
+    appComponents[idx+1]->refresh();
+    addAndMakeVisible (appComponents[idx+1].get());
+
+    setSize (1200, 500);
 }
 
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
@@ -77,6 +85,26 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     // Right now we are not producing any data, in which case we need to clear the buffer
     // (to prevent the output of random noise)
     bufferToFill.clearActiveBufferRegion();
+    float* const channeldataL = bufferToFill.buffer->getWritePointer (0);
+    float* const channeldataR = bufferToFill.buffer->getWritePointer (1);
+    
+    if (poleZeroPlot->isStable())
+        audioPlayer->resetStates();
+    
+    if (poleZeroPlot->isStable() && audioPlayer->shouldPlayNoise())
+        play = true;
+    else
+        play = false;
+    
+    outputScaling = audioPlayer->shouldScale() ? 1.0 / freqResponse->getHighestGain() : 1.0;
+    for (int i = 0; i < bufferToFill.buffer->getNumSamples(); ++i)
+    {
+        audioPlayer->calculate();
+        channeldataL[i] = Global::limit (play ? audioPlayer->getOutput() * outputScaling : 0.0, -1, 1);
+        if (channeldataR != nullptr)
+            channeldataR[i] = Global::limit (play ? audioPlayer->getOutput() * outputScaling : 0.0, -1, 1);
+    }
+   
 }
 
 void MainComponent::releaseResources()
@@ -92,7 +120,7 @@ void MainComponent::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (Colour (Global::backgroundColour));
-    g.drawRect (blockDiagram->getBounds());
+    g.drawRect (blockDiagram->getBounds().withHeight (blockDiagram->getHeight() * 0.5));
     g.setFont (Font (20.0f));
     g.drawText (blockDiagram->getTitle(), blockDiagram->getX() + Global::margin, blockDiagram->getY() + Global::margin, blockDiagram->getWidth(), 20.0, Justification::centredLeft);
     // You can add your drawing code here!
@@ -104,14 +132,20 @@ void MainComponent::resized()
     // If you add any child components, this is where you should
     // update their positions.
     Rectangle<int> totArea = getLocalBounds();
-    coefficientList.setBounds (totArea.removeFromRight (100));
+    coefficientList.setBounds (totArea.removeFromLeft (100));
     
-    Rectangle<int> leftHalf = totArea.removeFromLeft(totArea.getWidth() * 0.5);
-    differenceEq->setBounds (leftHalf.removeFromTop (100));
-    transferFunction->setBounds (leftHalf.removeFromTop (100));
-    blockDiagram->setBounds (leftHalf.withHeight (leftHalf.getHeight() * 2.0));
-    poleZeroPlot->setBounds (totArea.removeFromTop(totArea.getWidth()));
-    freqResponse->setBounds(totArea);
+    Rectangle<int> leftPart = totArea.removeFromLeft (totArea.getWidth() * 0.4);
+    Rectangle<int> middlePart = totArea.removeFromLeft (300);
+    Rectangle<int> rightPart = totArea;
+
+    audioPlayer->setBounds (leftPart.removeFromTop (50));
+    freqResponse->setBounds(leftPart.removeFromTop  (leftPart.getHeight() * 0.5));
+    phaseResponse->setBounds(leftPart);
+
+    poleZeroPlot->setBounds (middlePart.removeFromBottom (middlePart.getWidth()));
+    differenceEq->setBounds (middlePart.removeFromTop (middlePart.getHeight() * 0.5));
+    transferFunction->setBounds (middlePart);
+    blockDiagram->setBounds (rightPart.withHeight (rightPart.getHeight() * 2.0));
     
 //        if (appComponents[i]->getTitle() == "Frequency Response")
 //            appComponents[i]->setBounds (totArea.removeFromTop (200));
@@ -139,6 +173,7 @@ void MainComponent::textEditorTextChanged (TextEditor& textEditor)
     for (auto comp : appComponents)
     {
         comp->setCoefficients (coefficientList.getCoefficients());
+        if (comp->getTitle() != "Audio")
         comp->refresh();
     }
 }

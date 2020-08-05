@@ -51,4 +51,5 @@ public:
     }
     
     constexpr static const float arrowHeight = 5.0f;
+
 };

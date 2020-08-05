@@ -176,7 +176,7 @@ void BlockDiagram::resized()
                             bool drawingXPrev = drawingX;
                             if (!checkForNextCoefficient (curCoeffIdx)) // if there are no more coefficients
                             {
-                                int delaysFit = 3;
+                                int delaysFit = 4;
                                 float normalHeight = Global::bdCompDim * 0.5 + (2.0 * Global::vertArrowLength + Global::bdCompDim) * delaysFit + Global::gainHeight;
                                 float curHeight = normalHeight + std::max(0, std::max (numXDelaysDrawn, numYDelaysDrawn) - delaysFit) * (2.0 * Global::vertArrowLength + Global::bdCompDim);
                                 scaling = normalHeight / curHeight;

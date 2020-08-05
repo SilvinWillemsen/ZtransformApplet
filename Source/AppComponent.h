@@ -39,8 +39,8 @@ public:
     
 protected:
     Font textFont { 20.0f };
-    Font equationFont { "CMU Serif", 25.0f, Font::italic };
-
+    Font equationFont { Typeface::createSystemTypefaceFor (BinaryData::CMUSerifItalic_ttf, BinaryData::CMUSerifItalic_ttfSize) };
+    
     std::vector<double> coefficients;
     std::vector<std::complex<double>> data;
     

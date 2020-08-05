@@ -31,6 +31,8 @@ public:
     
     void buttonClicked (Button* button) override;
     
+    bool isStable() { return unstable == -1; };
+    
 private:
     std::vector<double> realZeroVector { Global::numCoeffs * 0.5 - 1, 0 };
     std::vector<double> imaginaryZeroVector { Global::numCoeffs * 0.5 - 1, 0 };

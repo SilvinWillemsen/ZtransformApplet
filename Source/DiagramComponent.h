@@ -60,7 +60,7 @@ public:
     
 private:
     ComponentType type;
-    Font equationFont { "CMU Serif", 25.0f, Font::italic };
+    Font equationFont { Typeface::createSystemTypefaceFor (BinaryData::CMUSerifItalic_ttf, BinaryData::CMUSerifItalic_ttfSize) };
 
     float data = 0.0;
     float height;

@@ -16,6 +16,7 @@ CoefficientComponent::CoefficientComponent (int ID, bool aCoeff) : ID (ID), aCoe
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
+    font.setHeight (25.0f);
     value.setName ((aCoeff ? "a" : "b") + String (ID));
     
     isA0 = (ID == 0 && aCoeff == true) ? true : false;

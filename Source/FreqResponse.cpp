@@ -124,7 +124,7 @@ void FreqResponse::paint (juce::Graphics& g)
     }
     
     //// Plot ////
-    g.setColour (unstable ? Colours::red : Colours::black);
+    g.setColour (gainAbove0 ? Colours::red : Colours::black);
     g.strokePath (generateResponsePath(), PathStrokeType(2.0f));
     
     //// Draw axes ////
@@ -176,7 +176,7 @@ void FreqResponse::calculate()
 {
     std::complex<double> i (0.0, 1.0);
     std::complex<double> omega (0.0, 0.0);
-
+    highestGain = 0;
     for (int k = 1; k <= Global::fftOrder; ++k)
     {
         double linearVal = k / static_cast<double>(Global::fftOrder);
@@ -203,6 +203,7 @@ void FreqResponse::calculate()
             denominator -= coefficients[j + Global::numCoeffs * 0.5] * exp(-i * omega * std::complex<double>(j));
         }
         data[k-1] = numerator / denominator;
+        highestGain = std::max (abs (data[k-1]), highestGain);
     }
     
     linearGainToDB();
@@ -210,12 +211,12 @@ void FreqResponse::calculate()
 
 void FreqResponse::linearGainToDB()
 {
-    unstable = false;
+    gainAbove0 = false;
     for (int i = 0; i < Global::fftOrder; ++i)
     {
         dBData[i] = Global::limit (20.0 * log10(abs(data[i])), -60.0, 100.0);
         if (dBData[i] > 0)
-            unstable = true;
+            gainAbove0 = true;
     }
 }
 

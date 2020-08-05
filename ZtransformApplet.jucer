@@ -3,6 +3,10 @@
 <JUCERPROJECT id="qkDMTi" name="ZtransformApplet" projectType="guiapp" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="GPvOwF" name="ZtransformApplet">
+    <GROUP id="{4E28D2C8-BA15-9545-AAE0-63D1E4F6B216}" name="Binaries">
+      <FILE id="cXdLhb" name="CMUSerif-Italic.ttf" compile="0" resource="1"
+            file="Source/Binaries/CMUSerif-Italic.ttf"/>
+    </GROUP>
     <GROUP id="{5642FFD2-099F-A11E-6A23-B744F912FCB8}" name="Source">
       <GROUP id="{3519018C-F8E9-2474-7B39-8EA6C62AA549}" name="PolynomialLibrary">
         <FILE id="fYUE56" name="Polynomial.cpp" compile="1" resource="0" file="Source/Polynomial.cpp"/>
@@ -13,6 +17,8 @@
               file="Source/PolynomialRootFinder.h"/>
       </GROUP>
       <FILE id="vysKR5" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
+      <FILE id="jhwFbg" name="AudioPlayer.cpp" compile="1" resource="0" file="Source/AudioPlayer.cpp"/>
+      <FILE id="mtN9U8" name="AudioPlayer.h" compile="0" resource="0" file="Source/AudioPlayer.h"/>
       <FILE id="ILOCH2" name="DiagramComponent.cpp" compile="1" resource="0"
             file="Source/DiagramComponent.cpp"/>
       <FILE id="DSuMTG" name="DiagramComponent.h" compile="0" resource="0"
@@ -23,6 +29,9 @@
       <FILE id="FsVbHf" name="PoleZeroPlot.cpp" compile="1" resource="0"
             file="Source/PoleZeroPlot.cpp"/>
       <FILE id="C4EYDh" name="PoleZeroPlot.h" compile="0" resource="0" file="Source/PoleZeroPlot.h"/>
+      <FILE id="WZJg33" name="PhaseResponse.cpp" compile="1" resource="0"
+            file="Source/PhaseResponse.cpp"/>
+      <FILE id="Der3Tj" name="PhaseResponse.h" compile="0" resource="0" file="Source/PhaseResponse.h"/>
       <FILE id="dg0I9A" name="FreqResponse.cpp" compile="1" resource="0"
             file="Source/FreqResponse.cpp"/>
       <FILE id="HSbbtc" name="FreqResponse.h" compile="0" resource="0" file="Source/FreqResponse.h"/>

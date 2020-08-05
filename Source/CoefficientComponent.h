@@ -36,6 +36,6 @@ private:
     bool isA0;
     TextEditor value;
     
-    Font font { "CMU Serif", 25.0f, Font::italic };
+    Font font { Typeface::createSystemTypefaceFor (BinaryData::CMUSerifItalic_ttf, BinaryData::CMUSerifItalic_ttfSize) };
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CoefficientComponent)
 };

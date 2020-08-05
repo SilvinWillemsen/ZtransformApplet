@@ -16,7 +16,7 @@ DiagramComponent::DiagramComponent (ComponentType type, ArrowType arrowType) : t
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-
+    equationFont.setHeight (25.0f);
     switch (type)
     {
         case arrow:
