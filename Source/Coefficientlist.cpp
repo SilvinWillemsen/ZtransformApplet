@@ -17,7 +17,7 @@ Coefficientlist::Coefficientlist()
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
     coefficients.resize (Global::numCoeffs);
-    list.setColour (ListBox::backgroundColourId, getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
+    list.setColour (ListBox::backgroundColourId, Colours::transparentWhite);
         
     for (int i = 0; i < Global::numCoeffs; ++i)
         coeffComps.add (new CoefficientComponent (i < Global::numCoeffs * 0.5 ? i : i - Global::numCoeffs * 0.5, i >= Global::numCoeffs * 0.5));
@@ -49,7 +49,6 @@ void Coefficientlist::resized()
     // components that your component contains..
     list.setBounds (getLocalBounds());
     list.setRowHeight (getHeight() / static_cast<float> (Global::numCoeffs));
-
 }
 
 void Coefficientlist::paintListBoxItem (int rowNumber, Graphics& g, int width, int height, bool rowIsSelected)

@@ -70,7 +70,11 @@ public:
            #if JUCE_IOS || JUCE_ANDROID
             setFullScreen (true);
            #else
-            setResizable (false, true);
+            setResizable (true, true);
+            cBC = std::make_unique<ComponentBoundsConstrainer>();
+            cBC->setSizeLimits (1140.0 / 2.0, 500.0 / 2.0, 1140.0 * 2.0, 500.0 * 2.0);
+            cBC->setFixedAspectRatio (1140.0f / 500.0f);
+            setConstrainer (cBC.get());
             centreWithSize (getWidth(), getHeight());
            #endif
 
@@ -93,6 +97,7 @@ public:
         */
 
     private:
+        std::unique_ptr<ComponentBoundsConstrainer> cBC;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
     };
 

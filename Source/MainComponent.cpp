@@ -73,7 +73,7 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     appComponents[idx+1]->refresh();
     addAndMakeVisible (appComponents[idx+1].get());
 
-    setSize (1200, 500);
+    setSize (1140, 500);
 }
 
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
@@ -131,6 +131,9 @@ void MainComponent::resized()
     // This is called when the MainContentComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
+//    AffineTransform transform;
+//    transform = transform.scaled(getWidth() / 1140.0f, getHeight() / 500.0f);
+//    setTransform (transform);
     Rectangle<int> totArea = getLocalBounds();
     coefficientList.setBounds (totArea.removeFromLeft (100));
     
@@ -139,7 +142,7 @@ void MainComponent::resized()
     Rectangle<int> rightPart = totArea;
 
     audioPlayer->setBounds (leftPart.removeFromTop (50));
-    freqResponse->setBounds(leftPart.removeFromTop  (leftPart.getHeight() * 0.5));
+    freqResponse->setBounds(leftPart.removeFromTop (leftPart.getHeight() * 0.5));
     phaseResponse->setBounds(leftPart);
 
     poleZeroPlot->setBounds (middlePart.removeFromBottom (middlePart.getWidth()));
