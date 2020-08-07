@@ -52,12 +52,36 @@ void FreqResponse::paint (juce::Graphics& g)
        You should replace everything in this method with your own
        drawing code..
     */
-    drawTitle (g);
-    drawOutline (g);
+    drawAppComp (g);
 
-    //// Draw zero DB line ////
-    g.drawLine (Global::axisMargin + Global::margin, zeroDbHeight, getWidth(), zeroDbHeight, 1.0);
+    if (round (highestDB * 10000) / 10000.0 == round (lowestDB * 10000) / 10000.0)
+    {
+        if (round (highestDB * 10000) / 10000.0 == 0)
+        {
+            zeroDbHeight = (getHeight() - Global::axisMargin - plotYStart) * 0.5 + plotYStart;
+            visualScaling = 1;
+        }
+        else if (highestDB > 0)
+        {
+            zeroDbHeight = plotYStart + plotHeight;
+            visualScaling  = plotHeight / highestDB;
+        }
+        else
+        {
+            zeroDbHeight = plotYStart;
+            visualScaling  = plotHeight / -lowestDB;
+        }
+    }
+    else
+    {
+        visualScaling = plotHeight / (highestDB - lowestDB);
+        zeroDbHeight = getHeight() - Global::axisMargin - Global::margin - (0 - lowestDB) * plotHeight / (highestDB - lowestDB);
+    }
     
+    //// Draw zero DB line ////
+    if (lowestDB < 0)
+        g.drawLine (Global::axisMargin + Global::margin, zeroDbHeight, getWidth(), zeroDbHeight, 1.0);
+
     double plotWidth = getWidth() - (Global::axisMargin + Global::margin);
 
     //// Draw gridlines ////
@@ -123,6 +147,66 @@ void FreqResponse::paint (juce::Graphics& g)
         }
     }
     
+    //// Draw y-axis labels ////
+    g.setColour (Colours::black);
+    int highValue10 = round (highestDB * 10);
+    int lowValue10 = round (lowestDB * 10);
+
+    if (round (highestDB * 10000) / 10000.0 == round (lowestDB * 10000) / 10000.0)
+    {
+       if (round (highestDB * 10000) / 10000.0 == 0)
+       {
+           g.drawText ("0",
+                       0.0f,
+                       zeroDbHeight - equationFont.getHeight() * 0.5,
+                       Global::axisMargin + Global::margin * 0.5,
+                       equationFont.getHeight(), Justification::centredRight, false);
+       }
+       else if (highestDB > 0)
+       {
+           g.drawText (String (highValue10 / 10.0),
+                       0.0f,
+                       plotYStart - equationFont.getHeight() * 0.5,
+                       Global::axisMargin + Global::margin * 0.5,
+                       equationFont.getHeight(), Justification::centredRight, false);
+           
+           g.drawText (String ("0"),
+                       0.0f,
+                       plotYStart + plotHeight - equationFont.getHeight() * 0.5,
+                       Global::axisMargin + Global::margin * 0.5,
+                       equationFont.getHeight(), Justification::centredRight, false);
+
+       }
+       else
+       {
+           g.drawText ("0",
+                       0.0f,
+                       plotYStart - equationFont.getHeight() * 0.5,
+                       Global::axisMargin + Global::margin * 0.5,
+                       equationFont.getHeight(), Justification::centredRight, false);
+           
+           g.drawText (String (lowValue10 / 10.0),
+                       0.0f,
+                       plotYStart + plotHeight - equationFont.getHeight() * 0.5,
+                       Global::axisMargin + Global::margin * 0.5,
+                       equationFont.getHeight(), Justification::centredRight, false);
+           
+       }
+    } else {
+    
+        g.drawText (String (highValue10 / 10.0),
+                    0.0f,
+                    plotYStart - equationFont.getHeight() * 0.5,
+                    Global::axisMargin + Global::margin * 0.5,
+                    equationFont.getHeight(), Justification::centredRight, false);
+        
+        g.drawText (String (round (lowestDB * 10) / 10.0),
+                    0.0f,
+                    plotYStart + plotHeight - equationFont.getHeight() * 0.5,
+                    Global::axisMargin + Global::margin * 0.5,
+                    equationFont.getHeight(), Justification::centredRight, false);
+    }
+    
     //// Plot ////
     g.setColour (gainAbove0 ? Colours::red : Colours::black);
     g.strokePath (generateResponsePath(), PathStrokeType(2.0f));
@@ -145,16 +229,16 @@ void FreqResponse::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
-    zeroDbHeight = (getHeight() - Global::axisMargin - plotYStart) * 0.5 + plotYStart;
+//    zeroDbHeight = (getHeight() - Global::axisMargin - plotYStart) * 0.5 + plotYStart;
     
     logPlotButton->setBounds(getWidth() - 100 - Global::margin, Global::margin, 100, 25);
+    plotHeight = (getHeight() - Global::axisMargin - Global::margin - plotYStart);
 
 }
 
 Path FreqResponse::generateResponsePath()
 {
     Path response;
-    float visualScaling = getHeight() / 300.0;
 
     //response.startNewSubPath(0, -dBData[0] * visualScaling + zeroDbHeight);
     response.startNewSubPath (Global::margin + Global::axisMargin, -dBData[0] * visualScaling + zeroDbHeight); // draw RT instead of filter magnitude
@@ -212,9 +296,14 @@ void FreqResponse::calculate()
 void FreqResponse::linearGainToDB()
 {
     gainAbove0 = false;
+    highestDB = -60.0;
+    lowestDB = 100.0;
     for (int i = 0; i < Global::fftOrder; ++i)
     {
         dBData[i] = Global::limit (20.0 * log10(abs(data[i])), -60.0, 100.0);
+        highestDB = std::max (dBData[i], highestDB);
+        lowestDB = std::min (dBData[i], lowestDB);
+
         if (dBData[i] > 0)
             gainAbove0 = true;
     }

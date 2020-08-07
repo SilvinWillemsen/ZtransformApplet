@@ -51,5 +51,11 @@ private:
     std::unique_ptr<TextButton> logPlotButton;
 
     double highestGain = 0;
+    double highestDB;
+    double lowestDB;
+    
+    double plotHeight;
+    double visualScaling;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FreqResponse)
 };

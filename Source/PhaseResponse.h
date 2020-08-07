@@ -4,6 +4,7 @@
 #include "Global.h"
 #include "AppComponent.h"
 #include <complex>
+#include <math.h>
 
 //==============================================================================
 /*
@@ -19,16 +20,12 @@ public:
     
     void calculate() override;
     Path generateResponsePath();
-    void linearGainToDB();
+    void linearGainToPhase();
     
     void buttonClicked (Button* button) override;
     
-    double getHighestGain() { return highestGain; };
-    
 private:
-    
-    bool gainAbove0;
-    std::vector<double> dBData;
+    std::vector<double> phaseData;
     std::vector<double> gridLineCoords;
     
     bool logPlot = false;
@@ -37,9 +34,9 @@ private:
     int zeroDbHeight = 0;
     
     double plotYStart = 40 + Global::margin;
-    
+    bool phaseIsNan = false;
     std::unique_ptr<TextButton> logPlotButton;
     
-    double highestGain = 0;
+    std::unique_ptr<Label> phaseLabel;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PhaseResponse)
 };

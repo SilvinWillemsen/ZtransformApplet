@@ -16,7 +16,7 @@ PhaseResponse::PhaseResponse (double fs) : AppComponent ("Phase Response", false
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-    dBData.resize (Global::fftOrder);
+    phaseData.resize (Global::fftOrder);
     
     gridLineCoords.resize (32);
     int m = 10;
@@ -52,8 +52,7 @@ void PhaseResponse::paint (juce::Graphics& g)
      You should replace everything in this method with your own
      drawing code..
      */
-    drawTitle (g);
-    drawOutline (g);
+    drawAppComp (g);
     
     //// Draw zero DB line ////
     g.drawLine (Global::axisMargin + Global::margin, zeroDbHeight, getWidth(), zeroDbHeight, 1.0);
@@ -124,11 +123,10 @@ void PhaseResponse::paint (juce::Graphics& g)
     }
     
     //// Plot ////
-    g.setColour (gainAbove0 ? Colours::red : Colours::black);
+    g.setColour (Colours::black);
     g.strokePath (generateResponsePath(), PathStrokeType(2.0f));
     
     //// Draw axes ////
-    g.setColour (Colours::black);
     g.drawLine (Global::margin + Global::axisMargin,
                 plotYStart,
                 Global::margin + Global::axisMargin,
@@ -145,7 +143,7 @@ void PhaseResponse::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
-    zeroDbHeight = (getHeight() - Global::axisMargin - plotYStart) * 0.5 + plotYStart;
+    zeroDbHeight = (getHeight() - Global::axisMargin - Global::margin - plotYStart) * 0.5 + plotYStart;
     
     logPlotButton->setBounds(getWidth() - 100 - Global::margin, Global::margin, 100, 25);
     
@@ -154,29 +152,32 @@ void PhaseResponse::resized()
 Path PhaseResponse::generateResponsePath()
 {
     Path response;
-    float visualScaling = getHeight() / 300.0;
+    float visualScaling = (getHeight() - Global::axisMargin - Global::margin - plotYStart) / double_Pi;
     
     //response.startNewSubPath(0, -dBData[0] * visualScaling + zeroDbHeight);
-    response.startNewSubPath (Global::margin + Global::axisMargin, -dBData[0] * visualScaling + zeroDbHeight); // draw RT instead of filter magnitude
-    auto spacing = (getWidth() - Global::margin - Global::axisMargin) / static_cast<double> (dBData.size());
+    response.startNewSubPath (Global::margin + Global::axisMargin, (isnan(phaseData[0]) ? 0.0 : -phaseData[0] * visualScaling) + zeroDbHeight); // draw RT instead of filter magnitude
+    auto spacing = (getWidth() - Global::margin - Global::axisMargin) / static_cast<double> (phaseData.size());
     double x = Global::margin + Global::axisMargin;
     float newY;
     for (int y = 0; y < data.size(); y++)
     {
-        newY = -dBData[y] * visualScaling + zeroDbHeight;
+        newY = -phaseData[y] * visualScaling + zeroDbHeight;
+        if (isnan(newY))
+            continue;
         response.lineTo(x, newY);
         x += spacing;
     }
-    response.lineTo (getWidth(), newY);
+    response.lineTo (getWidth(), isnan(newY) ? zeroDbHeight : newY);
     
     return response;
 }
 
 void PhaseResponse::calculate()
 {
+    phaseIsNan = false;
     std::complex<double> i (0.0, 1.0);
     std::complex<double> omega (0.0, 0.0);
-    highestGain = 0;
+    
     for (int k = 1; k <= Global::fftOrder; ++k)
     {
         double linearVal = k / static_cast<double>(Global::fftOrder);
@@ -203,21 +204,17 @@ void PhaseResponse::calculate()
             denominator -= coefficients[j + Global::numCoeffs * 0.5] * exp(-i * omega * std::complex<double>(j));
         }
         data[k-1] = numerator / denominator;
-        highestGain = std::max (abs (data[k-1]), highestGain);
+        if (data[k-1].real() == 0)
+            phaseIsNan = true;
     }
-    
-    linearGainToDB();
-}
-
-void PhaseResponse::linearGainToDB()
-{
-    gainAbove0 = false;
-    for (int i = 0; i < Global::fftOrder; ++i)
-    {
-        dBData[i] = Global::limit (20.0 * log10(abs(data[i])), -60.0, 100.0);
-        if (dBData[i] > 0)
-            gainAbove0 = true;
-    }
+    // if the real part of the data is 0, set all phase data to 0;
+//    if (phaseIsNan)
+//    {
+//        phaseData.clear();
+//        phaseData.resize (Global::fftOrder, 0.0);
+//    } else {
+    linearGainToPhase();
+//    }
 }
 
 void PhaseResponse::buttonClicked (Button* button)
@@ -225,4 +222,10 @@ void PhaseResponse::buttonClicked (Button* button)
     logPlot = !logPlot;
     logPlotButton->setButtonText (logPlot ? "Lin. plot" : "Log. plot");
     refresh();
+}
+
+void PhaseResponse::linearGainToPhase()
+{
+    for (int i = 0; i < Global::fftOrder; ++i)
+        phaseData[i] = atan (data[i].imag() / data[i].real());
 }

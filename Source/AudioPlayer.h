@@ -31,7 +31,7 @@ public:
     void buttonClicked (Button* button) override;
 
     bool shouldPlayNoise() { return playNoise; };
-    bool shouldScale() { return scale; };
+    bool shouldScaleOutput() { return scaleOutput; };
     float getOutput() { return output; };
     
     void resetStates() { prevOutputs.clear(); prevOutputs.resize (Global::numCoeffs * 0.5, 0); };
@@ -43,7 +43,7 @@ private:
     std::unique_ptr<TextButton> scaleButton;
 
     bool playNoise = false;
-    bool scale = true;
+    bool scaleOutput = true;
     Colour defaultButtonColour;
 
     std::vector<double> prevInputs;

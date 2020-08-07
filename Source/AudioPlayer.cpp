@@ -29,7 +29,7 @@ AudioPlayer::AudioPlayer() : AppComponent ("Audio", false)
     scaleButton = std::make_unique<TextButton> ("Auto scale");
     addAndMakeVisible (scaleButton.get());
     scaleButton->addListener (this);
-    scaleButton->setColour (TextButton::buttonColourId, scale ? Colours::green : defaultButtonColour);
+    scaleButton->setColour (TextButton::buttonColourId, scaleOutput ? Colours::green : defaultButtonColour);
 
 }
 
@@ -45,9 +45,7 @@ void AudioPlayer::paint (juce::Graphics& g)
        You should replace everything in this method with your own
        drawing code..
     */
-    drawTitle (g);
-    drawOutline (g);
-    
+    drawAppComp(g);
 }
 
 void AudioPlayer::resized()
@@ -70,8 +68,8 @@ void AudioPlayer::buttonClicked (Button* button)
     }
     else if (button == scaleButton.get())
     {
-        scale = !scale;
-        scaleButton->setColour (TextButton::buttonColourId, scale ? Colours::green : defaultButtonColour);
+        scaleOutput = !scaleOutput;
+        scaleButton->setColour (TextButton::buttonColourId, scaleOutput ? Colours::green : defaultButtonColour);
     }
 }
 

@@ -34,7 +34,6 @@ void PoleZeroPlot::paint (juce::Graphics& g)
        You should replace everything in this method with your own
        drawing code..
     */
-    
     switch (unstable) {
         case -1:
             g.fillAll (Colours::white);
@@ -47,9 +46,8 @@ void PoleZeroPlot::paint (juce::Graphics& g)
         default:
             break;
     }
+    drawAppComp (g);
     
-    drawTitle (g);
-    drawOutline (g);
     
     double diameter = getWidth() - 2.0 * (Global::pzAxisMargin + Global::margin);
     
@@ -214,8 +212,8 @@ void PoleZeroPlot::calculate()
         zoomButton->setVisible (true);
     else
     {
-        if (zoomed)
-            buttonClicked (zoomButton.get());
+//        if (zoomed)
+//            buttonClicked (zoomButton.get());
         zoomButton->setVisible (false);
     }
 }

@@ -35,8 +35,8 @@ void TransferFunction::paint (juce::Graphics& g)
        You should replace everything in this method with your own
        drawing code..
     */
-    drawTitle (g);
-    drawOutline (g);
+    
+    drawAppComp (g);
 
     //reset all vectors
     

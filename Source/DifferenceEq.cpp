@@ -30,8 +30,7 @@ void DifferenceEq::paint (juce::Graphics& g)
        You should replace everything in this method with your own
        drawing code..
     */
-    drawTitle (g);
-    drawOutline (g);
+    drawAppComp (g);
 
     Font font = equationFont;
     while (font.getStringWidth (equation) > getWidth() - 2.0 * Global::margin)

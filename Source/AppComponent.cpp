@@ -12,7 +12,7 @@
 #include "AppComponent.h"
 
 //==============================================================================
-AppComponent::AppComponent (String title, bool isEquation) : title (title), isEquation (isEquation)
+AppComponent::AppComponent (String title, bool isEquation, bool isBlockDiagram) : title (title), isEquation (isEquation), isBlockDiagram (isBlockDiagram)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -30,20 +30,26 @@ AppComponent::~AppComponent()
 
 void AppComponent::paint (Graphics& g)
 {
+    AffineTransform transform;
+    transform = transform.scale (scale, scale);
+    setTransform (transform);
 }
 
-void AppComponent::drawTitle (Graphics& g)
+void AppComponent::drawAppComp (Graphics& g)
 {
-    g.setFont (textFont);
-    g.setColour (Colour (Global::textColour));
-    g.drawText (title, Global::margin, Global::margin, getWidth() - Global::margin * 2.0, 25, Justification::centredLeft);
-    g.setFont (equationFont);
-}
+    if (!isBlockDiagram)
+    {
+        g.setColour (Colours::black);
+        g.drawRect (getLocalBounds());
+        AffineTransform transform;
+        transform = transform.scale (scale, scale);
+        g.addTransform (transform);
 
-void AppComponent::drawOutline (Graphics& g)
-{
-    g.setColour (Colours::black);
-    g.drawRect (getLocalBounds());
+        g.setFont (textFont);
+        g.setColour (Colour (Global::textColour));
+        g.drawText (title, Global::margin, Global::margin, getWidth() - Global::margin * 2.0, 25, Justification::centredLeft);
+        g.setFont (equationFont);
+    }
 }
 
 void AppComponent::resized()

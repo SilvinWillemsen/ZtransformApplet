@@ -73,7 +73,7 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     appComponents[idx+1]->refresh();
     addAndMakeVisible (appComponents[idx+1].get());
 
-    setSize (1140, 500);
+    setSize (Global::initWidth, Global::initHeight);
 }
 
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
@@ -96,7 +96,7 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     else
         play = false;
     
-    outputScaling = audioPlayer->shouldScale() ? 1.0 / freqResponse->getHighestGain() : 1.0;
+    outputScaling = audioPlayer->shouldScaleOutput() ? 1.0 / freqResponse->getHighestGain() : 1.0;
     for (int i = 0; i < bufferToFill.buffer->getNumSamples(); ++i)
     {
         audioPlayer->calculate();
@@ -119,10 +119,23 @@ void MainComponent::releaseResources()
 void MainComponent::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
+    float scale = (Global::initHeight * static_cast<float>(getWidth()) / static_cast<float>(Global::initWidth)) / Global::initHeight;
     g.fillAll (Colour (Global::backgroundColour));
-    g.drawRect (blockDiagram->getBounds().withHeight (blockDiagram->getHeight() * 0.5));
-    g.setFont (Font (20.0f));
-    g.drawText (blockDiagram->getTitle(), blockDiagram->getX() + Global::margin, blockDiagram->getY() + Global::margin, blockDiagram->getWidth(), 20.0, Justification::centredLeft);
+    
+    g.drawRect ((differenceEq->getX() + differenceEq->getWidth()) * scale,
+                blockDiagram->getY() * scale,
+                blockDiagram->getWidth() * scale,
+                blockDiagram->getHeight() * 0.5 * scale);
+    g.setFont (Font (20.0f * scale));
+    g.drawText (blockDiagram->getTitle(), (blockDiagram->getX() + Global::margin) * scale, (blockDiagram->getY() + Global::margin) * scale, blockDiagram->getWidth() * scale, 20.0 * scale, Justification::centredLeft);
+    AffineTransform transform;
+    transform = transform.scaled (scale);
+    transform = transform.scaled (blockDiagram->getScaling(),
+                                  blockDiagram->getScaling(),
+//                                  getWidth(), getHeight());
+                                  (816 + 162) * scale,
+                                  0.0 + blockDiagram->getTopLoc() - 0.5 * Global::bdCompDim);
+    blockDiagram->setTransform (transform);
     // You can add your drawing code here!
 }
 
@@ -131,36 +144,36 @@ void MainComponent::resized()
     // This is called when the MainContentComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
-//    AffineTransform transform;
-//    transform = transform.scaled(getWidth() / 1140.0f, getHeight() / 500.0f);
+    AffineTransform transform;
+    float scaling = floor(Global::initHeight * static_cast<float>(getWidth()) / static_cast<float>(Global::initWidth)) / Global::initHeight;
+    transform = transform.scaled (scaling);
 //    setTransform (transform);
-    Rectangle<int> totArea = getLocalBounds();
-    coefficientList.setBounds (totArea.removeFromLeft (100));
+//    for (auto comp : appComponents)
+//    {
+        blockDiagram->setScale (scaling);
+//    }
     
-    Rectangle<int> leftPart = totArea.removeFromLeft (totArea.getWidth() * 0.4);
+    Rectangle<int> totArea (0, 0, Global::initWidth, Global::initHeightWithOffset);
+    coefficientList.setBounds (totArea.removeFromLeft (150));
+    coefficientList.setTransform (transform);
+    
+    Rectangle<int> leftPart = totArea.removeFromLeft (366);
     Rectangle<int> middlePart = totArea.removeFromLeft (300);
-    Rectangle<int> rightPart = totArea;
-
+    Rectangle<int> rightPart = totArea.removeFromLeft (324);
+    
     audioPlayer->setBounds (leftPart.removeFromTop (50));
-    freqResponse->setBounds(leftPart.removeFromTop (leftPart.getHeight() * 0.5));
-    phaseResponse->setBounds(leftPart);
-
-    poleZeroPlot->setBounds (middlePart.removeFromBottom (middlePart.getWidth()));
-    differenceEq->setBounds (middlePart.removeFromTop (middlePart.getHeight() * 0.5));
+    freqResponse->setBounds (leftPart.removeFromTop ((Global::initHeightWithOffset - 50) * 0.5));
+    phaseResponse->setBounds (leftPart);
+    
+    poleZeroPlot->setBounds (middlePart.removeFromBottom (300));
+    differenceEq->setBounds (middlePart.removeFromTop ((Global::initHeightWithOffset - 300) * 0.5));
     transferFunction->setBounds (middlePart);
     blockDiagram->setBounds (rightPart.withHeight (rightPart.getHeight() * 2.0));
-    
-//        if (appComponents[i]->getTitle() == "Frequency Response")
-//            appComponents[i]->setBounds (totArea.removeFromTop (200));
-//        else if (appComponents[i]->getTitle() == "Pole-Zero Plot")
-//        {
-//            appComponents[i]->setBounds (totArea.getX(), totArea.getY(), 200, 200);
-//            totArea.removeFromTop (200);
-//        } else
-//            appComponents[i]->setBounds (totArea.removeFromTop (100));
-//
-//    }
 
+    for (auto comp : appComponents)
+        if (comp->getTitle() != "Block Diagram") // updated in the paint function
+            comp->setTransform (transform);
+//    this->repaint();
 }
 
 void MainComponent::textEditorTextChanged (TextEditor& textEditor)

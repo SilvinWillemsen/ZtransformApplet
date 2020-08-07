@@ -21,12 +21,11 @@ using namespace juce;
 class AppComponent  : public Component
 {
 public:
-    AppComponent (String title, bool isEquation);
+    AppComponent (String title, bool isEquation, bool isBlockDiagram = false);
     ~AppComponent() override;
 
     void paint (Graphics&) override;
-    void drawTitle (Graphics&);
-    void drawOutline (Graphics&);
+    void drawAppComp (Graphics&);
     
     void resized() override;
 
@@ -37,16 +36,20 @@ public:
     
     virtual void calculate() {};
     
+    void setScale (float scaleToSet) { scale = scaleToSet; };
+    
 protected:
     Font textFont { 20.0f };
     Font equationFont { Typeface::createSystemTypefaceFor (BinaryData::CMUSerifItalic_ttf, BinaryData::CMUSerifItalic_ttfSize) };
     
+    float scale = 1.0f;
+
     std::vector<double> coefficients;
     std::vector<std::complex<double>> data;
     
 private:
     String title;
     bool isEquation;
-    
+    bool isBlockDiagram;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AppComponent)
 };

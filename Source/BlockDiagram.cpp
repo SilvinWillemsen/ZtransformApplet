@@ -12,7 +12,7 @@
 #include "BlockDiagram.h"
 
 //==============================================================================
-BlockDiagram::BlockDiagram() : AppComponent ("Block Diagram", false)
+BlockDiagram::BlockDiagram() : AppComponent ("Block Diagram", false, true)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -64,15 +64,14 @@ void BlockDiagram::paint (juce::Graphics& g)
     // as this component scales fully, we're drawing this separately
 //    drawTitle (g);
 //    drawOutline (g);
+    drawAppComp (g);
+    resized();
 }
 
 void BlockDiagram::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
-    
-    float topLoc = 60;
-    float centerLoc = getWidth() * 0.5;
     
     float curX = Global::margin;
     float curY = topLoc;
@@ -180,9 +179,9 @@ void BlockDiagram::resized()
                                 float normalHeight = Global::bdCompDim * 0.5 + (2.0 * Global::vertArrowLength + Global::bdCompDim) * delaysFit + Global::gainHeight;
                                 float curHeight = normalHeight + std::max(0, std::max (numXDelaysDrawn, numYDelaysDrawn) - delaysFit) * (2.0 * Global::vertArrowLength + Global::bdCompDim);
                                 scaling = normalHeight / curHeight;
-                                AffineTransform transform;
-                                transform = transform.scale (scaling, scaling, getX() + 0.5 * getWidth(), getY() + (topLoc - 0.5 * Global::bdCompDim));
-                                setTransform (transform);
+//                                AffineTransform transform = getTransform();
+//                                transform = transform.scale (scaling, scaling, getX() + 0.5 * getWidth(), getY() + (topLoc - 0.5 * Global::bdCompDim));
+//                                setTransform (transform);
 //                                this->setBounds (getBounds().withHeight (getHeight() * 0.5));
                                 return;
                             }
@@ -225,7 +224,7 @@ void BlockDiagram::resized()
                                 if (coefficients[curCoeffIdx] != 1)
                                     curX -= (1.0 / 3.0 * getWidth() - (Global::bdCompDim - 5) - Global::gainWidth - Global::gainWidth + 3);
                                 else
-                                    curX += (1.0 / 3.0 * getWidth() - (Global::bdCompDim - 5) - 3.0 * Global::gainWidth - 7);
+                                    curX += (1.0 / 3.0 * getWidth() - (Global::bdCompDim - 5) - 3.0 * Global::gainWidth - 9);
                             else
                                 curX -= 1;
                             compWidth = 1.0 / 3.0 * getWidth() - (Global::bdCompDim - 5) - Global::gainWidth;
@@ -270,6 +269,8 @@ void BlockDiagram::resized()
                     continue;
                 if (noGainFlag)
                 {
+                    if (!drawingX)
+                        curX += Global::gainWidth;
                     noGainFlag = false;
                     continue;
                 }
@@ -316,7 +317,6 @@ void BlockDiagram::calculate()
                 ++numXGains;
         }
     }
-    std::cout << numXGains << " " << numYGains << std::endl;
     resized();
 }
 

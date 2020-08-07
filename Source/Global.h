@@ -16,6 +16,10 @@ using namespace juce;
 class Global
 {
 public:
+    constexpr static const float initWidth = 1140.0f;
+    constexpr static const float initHeight = 500.0f;
+    constexpr static const float initHeightWithOffset = 477.0f;
+
     static const uint32 textColour = 0xff000000;
     static const uint32 backgroundColour = 0xffffffff;
     static const uint32 alternateColour = 0xffd3d3d3;
@@ -29,7 +33,7 @@ public:
     static const int fftOrder = 8192;
     
     constexpr static const float bdCompDim = 40;
-    constexpr static const float vertArrowLength = bdCompDim * 0.75;
+    constexpr static const float vertArrowLength = bdCompDim * 0.73;
     constexpr static const float gainHeight = bdCompDim * 0.75;
     constexpr static const float gainWidth = bdCompDim * 0.5;
     
