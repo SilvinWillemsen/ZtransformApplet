@@ -34,9 +34,13 @@ private:
     int zeroDbHeight = 0;
     
     double plotYStart = 40 + Global::margin;
+    float plotHeight = 1;
+    
     bool phaseIsNan = false;
     std::unique_ptr<TextButton> logPlotButton;
-    
+        
     std::unique_ptr<Label> phaseLabel;
+    std::unique_ptr<Label> freqLabel;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PhaseResponse)
 };

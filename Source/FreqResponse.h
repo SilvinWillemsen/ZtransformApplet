@@ -56,6 +56,9 @@ private:
     
     double plotHeight;
     double visualScaling;
+    
+    std::unique_ptr<Label> dBLabel;
+    std::unique_ptr<Label> freqLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FreqResponse)
 };

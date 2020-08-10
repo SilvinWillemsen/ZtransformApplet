@@ -103,29 +103,29 @@ void TransferFunction::paint (juce::Graphics& g)
             xPowersOffset = (equationFont.getStringWidthFloat (xEquation) + equationFont.getStringWidthFloat (yEquation)) * 0.5 - equationFont.getStringWidthFloat (xEquation);
         
         // Draw main equation (without powers)
-        g.drawText ("H(z) = ", Global::margin, 40 + Global::margin, getWidth(), 25, Justification::centredLeft, false);
-        g.drawText(xEquation, 65 + Global::margin, 25 + Global::margin, totStringWidth, 25, Justification::centred, false);
+        g.drawText ("H(z) = ", Global::margin, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5, getWidth(), 25, Justification::centredLeft, false);
+        g.drawText(xEquation, 65 + Global::margin, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5 - 15, totStringWidth, 25, Justification::centred, false);
         g.setColour (Colours::black);
         g.drawLine (Global::margin + 65,
-                    40 + Global::margin + 25 * 0.5,
+                    (getHeight() + Global::margin + 12.5) * 0.5,
                     80 + totStringWidth + Global::margin,
-                    40 + Global::margin + 25 * 0.5);
+                    (getHeight() + Global::margin + 12.5) * 0.5);
         
-        g.drawText(yEquation, Global::margin + 65, 55 + Global::margin, totStringWidth, 25, Justification::centred, false);
+        g.drawText(yEquation, Global::margin + 65, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5 + 15, totStringWidth, 25, Justification::centred, false);
         
         // Draw powers
         g.setFont (equationFont.withHeight(16.0f));
         for (int i = 0; i < xPowersAmount; ++i)
             g.drawText("-" + String (xPowers[i]),
                        Global::margin + 70 + xPowerLocs[i] + xPowersOffset,
-                       25 + Global::margin,
+                       (getHeight() + Global::margin + 12.5) * 0.5 - 12.5 - 15,
                        equationFont.getStringWidthFloat("-" + String (xPowers[i])),
                        16, Justification::centredRight);
         
         for (int i = 0; i < yPowersAmount; ++i)
             g.drawText("-" + String (yPowers[i]),
                        Global::margin + 70 + yPowerLocs[i] + yPowersOffset,
-                       55 + Global::margin,
+                       (getHeight() + Global::margin + 12.5) * 0.5 - 12.5 + 15,
                        equationFont.getStringWidthFloat("-" + String (yPowers[i])),
                        16, Justification::centredRight);
     }

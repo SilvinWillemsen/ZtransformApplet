@@ -38,6 +38,20 @@ FreqResponse::FreqResponse (double fs) : AppComponent ("Frequency Response", fal
     logPlotButton->setButtonText (logPlot ? "Lin. plot" : "Log. plot");
     logPlotButton->addListener (this);
     addAndMakeVisible (logPlotButton.get());
+    
+    //// Labels ////
+    dBLabel = std::make_unique<Label> ("dB", "dB");
+    dBLabel->setColour(Label::textColourId, Colours::black);
+    dBLabel->setColour(Label::backgroundColourId, Colours::white.withAlpha(0.0f));
+    dBLabel->setJustificationType(Justification::centred);
+    addAndMakeVisible (dBLabel.get());
+    
+    freqLabel = std::make_unique<Label> ("Freq", "Freq (Hz)");
+    freqLabel->setColour(Label::textColourId, Colours::black);
+    freqLabel->setColour(Label::backgroundColourId, Colours::white.withAlpha(0.0f));
+    freqLabel->setJustificationType(Justification::centred);
+    addAndMakeVisible (freqLabel.get());
+    
 }
 
 FreqResponse::~FreqResponse()
@@ -112,7 +126,7 @@ void FreqResponse::paint (juce::Graphics& g)
         
     
     //// Draw x-axis labels ////
-    g.setFont (equationFont.withHeight (16.0f));
+    g.setFont (equationFont.withHeight (14.0f));
 
     if (logPlot)
     {
@@ -233,7 +247,14 @@ void FreqResponse::resized()
     
     logPlotButton->setBounds(getWidth() - 100 - Global::margin, Global::margin, 100, 25);
     plotHeight = (getHeight() - Global::axisMargin - Global::margin - plotYStart);
-
+    
+    AffineTransform transformGain;
+    transformGain = transformGain.rotated (-0.5 * double_Pi, Global::axisMargin * 0.5, plotYStart + 0.5 * plotHeight);
+//    transformGain = transformGain.translated (-Global::axisMargin * 0.72, 0);
+    dBLabel->setTransform (transformGain);
+    
+    dBLabel->setBounds (0, plotYStart, Global::axisMargin, plotHeight);
+    freqLabel->setBounds (Global::axisMargin, plotYStart + plotHeight + Global::axisMargin * 0.6, getWidth() - Global::axisMargin, Global::axisMargin * 0.5);
 }
 
 Path FreqResponse::generateResponsePath()

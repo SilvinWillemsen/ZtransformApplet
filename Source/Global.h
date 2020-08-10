@@ -25,7 +25,7 @@ public:
     static const uint32 alternateColour = 0xffd3d3d3;
     
     constexpr static const float margin = 10.0f;
-    constexpr static const float axisMargin = 25.0f;
+    constexpr static const float axisMargin = 30.0f;
     constexpr static const float pzAxisMargin = 30.0f;
 
     static const int numCoeffs = 12;
@@ -53,6 +53,8 @@ public:
         }
         return val;
     }
+    
+    static inline int sgn (double val) { return (0 < val) - (val < 0); };
     
     constexpr static const float arrowHeight = 5.0f;
 

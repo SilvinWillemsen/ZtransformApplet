@@ -38,6 +38,20 @@ PhaseResponse::PhaseResponse (double fs) : AppComponent ("Phase Response", false
     logPlotButton->setButtonText (logPlot ? "Lin. plot" : "Log. plot");
     logPlotButton->addListener (this);
     addAndMakeVisible (logPlotButton.get());
+    
+    //// Labels ////
+    phaseLabel = std::make_unique<Label> ("Phase", "Phase (deg)");
+    phaseLabel->setColour(Label::textColourId, Colours::black);
+    phaseLabel->setColour(Label::backgroundColourId, Colours::white.withAlpha(0.0f));
+    phaseLabel->setJustificationType(Justification::centred);
+    addAndMakeVisible (phaseLabel.get());
+    
+    freqLabel = std::make_unique<Label> ("Freq", "Freq (Hz)");
+    freqLabel->setColour(Label::textColourId, Colours::black);
+    freqLabel->setColour(Label::backgroundColourId, Colours::white.withAlpha(0.0f));
+    freqLabel->setJustificationType(Justification::centred);
+    addAndMakeVisible (freqLabel.get());
+    
 }
 
 PhaseResponse::~PhaseResponse()
@@ -87,7 +101,7 @@ void PhaseResponse::paint (juce::Graphics& g)
     
     
     //// Draw x-axis labels ////
-    g.setFont (equationFont.withHeight (16.0f));
+    g.setFont (equationFont.withHeight (14.0f));
     
     if (logPlot)
     {
@@ -137,6 +151,18 @@ void PhaseResponse::paint (juce::Graphics& g)
                 getWidth(),
                 getHeight() - Global::axisMargin - Global::margin);
     
+    g.drawText ("90",
+                0.0f,
+                plotYStart - equationFont.getHeight() * 0.5,
+                Global::axisMargin + Global::margin * 0.5,
+                equationFont.getHeight(), Justification::centredRight, false);
+    
+    g.drawText ("-90",
+                0.0f,
+                plotYStart + plotHeight - equationFont.getHeight() * 0.5,
+                Global::axisMargin + Global::margin * 0.5,
+                equationFont.getHeight(), Justification::centredRight, false);
+    
 }
 
 void PhaseResponse::resized()
@@ -145,8 +171,18 @@ void PhaseResponse::resized()
     // components that your component contains..
     zeroDbHeight = (getHeight() - Global::axisMargin - Global::margin - plotYStart) * 0.5 + plotYStart;
     
-    logPlotButton->setBounds(getWidth() - 100 - Global::margin, Global::margin, 100, 25);
+    logPlotButton->setBounds (getWidth() - 100 - Global::margin, Global::margin, 100, 25);
     
+    plotHeight = (getHeight() - Global::axisMargin - Global::margin - plotYStart);
+
+    float labelWidth = phaseLabel->getFont().getStringWidth (phaseLabel->getText());
+    phaseLabel->setBounds (-labelWidth * 0.5, plotYStart + 0.5 * plotHeight - phaseLabel->getFont().getHeight() * 0.5, plotHeight, phaseLabel->getFont().getHeight());
+    
+    AffineTransform transformGain;
+    transformGain = transformGain.rotated (-0.5 * double_Pi, phaseLabel->getX() + phaseLabel->getWidth() * 0.5, phaseLabel->getY() + phaseLabel->getHeight() * 0.5);
+    transformGain = transformGain.translated (-Global::axisMargin * 0.25, 0);
+    phaseLabel->setTransform (transformGain);
+    freqLabel->setBounds (Global::axisMargin, plotYStart + plotHeight + Global::axisMargin * 0.6, getWidth() - Global::axisMargin, Global::axisMargin * 0.5);
 }
 
 Path PhaseResponse::generateResponsePath()
@@ -226,6 +262,15 @@ void PhaseResponse::buttonClicked (Button* button)
 
 void PhaseResponse::linearGainToPhase()
 {
+    int phaseSign = 0;
     for (int i = 0; i < Global::fftOrder; ++i)
+    {
         phaseData[i] = atan (data[i].imag() / data[i].real());
+        if (round(abs(phaseData[i]) * 10000) / 10000.0 == round(float_Pi * 5000) / 10000.0 )
+        {
+            if (phaseSign == 0)
+                phaseSign = Global::sgn (phaseData[i]);
+            phaseData[i] = phaseSign * float_Pi * 0.5;
+        }
+    }
 }
