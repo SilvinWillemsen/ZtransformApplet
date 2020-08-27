@@ -176,7 +176,7 @@ void FreqResponse::paint (juce::Graphics& g)
                        Global::axisMargin + Global::margin * 0.5,
                        equationFont.getHeight(), Justification::centredRight, false);
        }
-       else if (highestDB > 0)
+       else if (highestDB > 0)  
        {
            g.drawText (String (highValue10 / 10.0),
                        0.0f,
@@ -321,7 +321,7 @@ void FreqResponse::linearGainToDB()
     lowestDB = 100.0;
     for (int i = 0; i < Global::fftOrder; ++i)
     {
-        dBData[i] = Global::limit (20.0 * log10(abs(data[i])), -60.0, 100.0);
+        dBData[i] = Global::limit (20.0 * log10(abs(data[i])), -60.0, 1000.0);
         highestDB = std::max (dBData[i], highestDB);
         lowestDB = std::min (dBData[i], lowestDB);
 

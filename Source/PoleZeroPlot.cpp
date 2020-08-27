@@ -69,6 +69,7 @@ void PoleZeroPlot::paint (juce::Graphics& g)
     g.drawLine (Global::margin + 0.5 * Global::pzAxisMargin, getHeight() * 0.5, getWidth() - Global::margin - 0.5 * Global::pzAxisMargin, getHeight() * 0.5);
     
     g.setColour (Colours::black);
+    highestXOrder += highestXOrder == 0 ? 1 : 0;
     for (int i = 0; i < highestXOrder; ++i)
         g.drawEllipse (getWidth() * 0.5 + Global::limit (realZeroVector[i], -100, 100) * diameter * 0.5 - 3,
                        getHeight() * 0.5 - Global::limit (imaginaryZeroVector[i], -100, 100) * diameter * 0.5 - 3,
