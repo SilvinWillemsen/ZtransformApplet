@@ -53,6 +53,22 @@ public:
         }
         return val;
     }
+    static double outputLimit (double val)
+    {
+        if (val < -1.0)
+        {
+            std::cout << "Limiter used" << std::endl;
+            val = -1.0;
+            return val;
+        }
+        else if (val > 1.0)
+        {
+            std::cout << "Limiter used" << std::endl;
+            val = 1.0;
+            return val;
+        }
+        return val;
+    }
     
     static inline int sgn (double val) { return (0 < val) - (val < 0); };
     

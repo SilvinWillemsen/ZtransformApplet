@@ -63,3 +63,15 @@ void CoefficientComponent::resized()
     valueArea.removeFromLeft (font.getStringWidth ((aCoeff ? "a  =" : "b  =")));
     value.setBounds (valueArea.reduced (Global::margin * 0.75));
 }
+
+void CoefficientComponent::mouseDown (const MouseEvent& e)
+{
+    curX = e.x;
+    curVal = value.getText().getDoubleValue();
+};
+
+void CoefficientComponent::mouseDrag (const MouseEvent& e)
+{
+    diffX = e.x - curX;
+    value.setText (String(curVal + 0.01 * diffX));
+};

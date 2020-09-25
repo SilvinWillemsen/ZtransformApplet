@@ -100,9 +100,9 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     for (int i = 0; i < bufferToFill.buffer->getNumSamples(); ++i)
     {
         audioPlayer->calculate();
-        channeldataL[i] = Global::limit (play ? audioPlayer->getOutput() * outputScaling : 0.0, -1, 1);
+        channeldataL[i] = Global::outputLimit (play ? audioPlayer->getOutput() * outputScaling * 0.5 : 0.0);
         if (channeldataR != nullptr)
-            channeldataR[i] = Global::limit (play ? audioPlayer->getOutput() * outputScaling : 0.0, -1, 1);
+            channeldataR[i] = Global::outputLimit (play ? audioPlayer->getOutput() * outputScaling * 0.5 : 0.0);
     }
    
 }
@@ -192,8 +192,4 @@ void MainComponent::textEditorTextChanged (TextEditor& textEditor)
         if (comp->getTitle() != "Audio")
         comp->refresh();
     }
-}
-
-void MainComponent::mouseDown (const MouseEvent& e)
-{
 }

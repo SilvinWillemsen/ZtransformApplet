@@ -16,7 +16,7 @@
     your controls and content.
 */
 class MainComponent  : public juce::AudioAppComponent,
-public TextEditor::Listener
+                       public TextEditor::Listener
 {
 public:
     //==============================================================================
@@ -34,8 +34,6 @@ public:
 
     void textEditorTextChanged (TextEditor& textEditor) override;
     
-    void mouseDown (const MouseEvent& e) override;
-
 private:
     //==============================================================================
     // Your private member variables go here...
