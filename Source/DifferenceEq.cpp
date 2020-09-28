@@ -57,18 +57,24 @@ void DifferenceEq::calculate()
         if (coefficients[i] == 0)
             continue;
         
-        // if it is not the first entry
-        if (equation != "y[n] = ")
+
+        if (coefficients[i] > 0)
         {
-            if (coefficients[i] > 0)
+            // if it is not the first entry
+            if (equation != "y[n] = ")
+            {
                 equation += " + ";
+            }
+        } else {
+            if (equation == "y[n] = ")
+                equation += "-";
             else
                 equation += " - ";
         }
         
         if (abs(coefficients[i]) != 1)
             equation += String (abs (coefficients[i]));
-        
+
         equation += "x[n";
         if (i != 0)
         {

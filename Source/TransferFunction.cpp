@@ -159,7 +159,7 @@ void TransferFunction::calculate()
         }
         
         if (i == 0 || abs(coefficients[i]) != 1)
-            xEquation += String (abs (coefficients[i]));
+            xEquation += String (i == 0 ? coefficients[i] : abs (coefficients[i]));
         
         if (i != 0)
         {
