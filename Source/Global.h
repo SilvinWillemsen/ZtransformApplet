@@ -58,13 +58,13 @@ public:
     {
         if (val < -1.0)
         {
-            std::cout << "Limiter used" << std::endl;
+//            std::cout << "Limiter used" << std::endl;
             val = -1.0;
             return val;
         }
         else if (val > 1.0)
         {
-            std::cout << "Limiter used" << std::endl;
+//            std::cout << "Limiter used" << std::endl;
             val = 1.0;
             return val;
         }

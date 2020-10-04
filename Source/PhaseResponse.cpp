@@ -285,7 +285,6 @@ void PhaseResponse::linearGainToPhase()
             phaseData[i] = phaseSign * float_Pi;
         }
     }
-    std::cout << data[2048] << std::endl;
 }
 
 void PhaseResponse::mouseMove (const MouseEvent& e)
