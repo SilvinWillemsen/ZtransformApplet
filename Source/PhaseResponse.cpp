@@ -52,6 +52,15 @@ PhaseResponse::PhaseResponse (double fs) : AppComponent ("Phase Response", false
     freqLabel->setJustificationType(Justification::centred);
     addAndMakeVisible (freqLabel.get());
     
+    if (Global::showPhaseValue)
+    {
+        valueLabel = std::make_unique<Label> ("Value", "0.0");
+        valueLabel->setColour(Label::textColourId, Colours::black);
+        valueLabel->setColour(Label::backgroundColourId, Colours::white.withAlpha(0.0f));
+        valueLabel->setJustificationType(Justification::centred);
+        addAndMakeVisible (valueLabel.get());
+    }
+    
 }
 
 PhaseResponse::~PhaseResponse()
@@ -151,13 +160,13 @@ void PhaseResponse::paint (juce::Graphics& g)
                 getWidth(),
                 getHeight() - Global::axisMargin - Global::margin);
     
-    g.drawText ("90",
+    g.drawText ("180",
                 0.0f,
                 plotYStart - equationFont.getHeight() * 0.5,
                 Global::axisMargin + Global::margin * 0.5,
                 equationFont.getHeight(), Justification::centredRight, false);
     
-    g.drawText ("-90",
+    g.drawText ("-180",
                 0.0f,
                 plotYStart + plotHeight - equationFont.getHeight() * 0.5,
                 Global::axisMargin + Global::margin * 0.5,
@@ -170,9 +179,11 @@ void PhaseResponse::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
     zeroDbHeight = (getHeight() - Global::axisMargin - Global::margin - plotYStart) * 0.5 + plotYStart;
-    
+
     logPlotButton->setBounds (getWidth() - 100 - Global::margin, Global::margin, 100, 25);
-    
+    if (Global::showPhaseValue)
+        valueLabel->setBounds (getWidth() * 0.5, Global::margin, 100, 100);
+
     plotHeight = (getHeight() - Global::axisMargin - Global::margin - plotYStart);
 
     float labelWidth = phaseLabel->getFont().getStringWidth (phaseLabel->getText());
@@ -183,12 +194,13 @@ void PhaseResponse::resized()
     transformGain = transformGain.translated (-Global::axisMargin * 0.25, 0);
     phaseLabel->setTransform (transformGain);
     freqLabel->setBounds (Global::axisMargin, plotYStart + plotHeight + Global::axisMargin * 0.6, getWidth() - Global::axisMargin, Global::axisMargin * 0.5);
+    
 }
 
 Path PhaseResponse::generateResponsePath()
 {
     Path response;
-    float visualScaling = (getHeight() - Global::axisMargin - Global::margin - plotYStart) / double_Pi;
+    float visualScaling = (getHeight() - Global::axisMargin - Global::margin - plotYStart) / (2.0 * double_Pi);
     
     //response.startNewSubPath(0, -dBData[0] * visualScaling + zeroDbHeight);
     response.startNewSubPath (Global::margin + Global::axisMargin, (isnan(phaseData[0]) ? 0.0 : -phaseData[0] * visualScaling) + zeroDbHeight); // draw RT instead of filter magnitude
@@ -265,12 +277,32 @@ void PhaseResponse::linearGainToPhase()
     int phaseSign = 0;
     for (int i = 0; i < Global::fftOrder; ++i)
     {
-        phaseData[i] = atan (data[i].imag() / data[i].real());
-        if (round(abs(phaseData[i]) * 10000) / 10000.0 == round(float_Pi * 5000) / 10000.0 )
+        phaseData[i] = std::atan2 (data[i].imag(), data[i].real());
+        if (round(abs(phaseData[i]) * 10000) / 10000.0 == round(float_Pi * 10000) / 10000.0 )
         {
             if (phaseSign == 0)
                 phaseSign = Global::sgn (phaseData[i]);
-            phaseData[i] = phaseSign * float_Pi * 0.5;
+            phaseData[i] = phaseSign * float_Pi;
         }
+    }
+    std::cout << data[2048] << std::endl;
+}
+
+void PhaseResponse::mouseMove (const MouseEvent& e)
+{
+//    showValue = true;
+    if (!Global::showPhaseValue)
+        return;
+    
+    valueLabel->setVisible (true);
+
+    double mouseLoc =  (e.x - Global::axisMargin - Global::margin) / static_cast<float> (getWidth() - Global::axisMargin - Global::margin);
+    if (mouseLoc >= 0)
+    {
+//        std::cout << mouseLoc << std::endl;
+    
+        int idx = floor(mouseLoc * Global::fftOrder);
+        valueLabel->setText (String (phaseData[idx] / double_Pi) + String(juce::CharPointer_UTF8 ("\xcf\x80")), dontSendNotification);
+        valueLabel->setBounds (getWidth() * 0.5, Global::margin, 100, 50);
     }
 }

@@ -190,6 +190,6 @@ void MainComponent::textEditorTextChanged (TextEditor& textEditor)
     {
         comp->setCoefficients (coefficientList.getCoefficients());
         if (comp->getTitle() != "Audio")
-        comp->refresh();
+            comp->refresh();
     }
 }

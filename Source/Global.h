@@ -31,7 +31,8 @@ public:
     static const int numCoeffs = 12;
     
     static const int fftOrder = 8192;
-    
+    static const bool showPhaseValue = false;
+
     constexpr static const float bdCompDim = 40;
     constexpr static const float vertArrowLength = bdCompDim * 0.73;
     constexpr static const float gainHeight = bdCompDim * 0.75;

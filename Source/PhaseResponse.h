@@ -23,7 +23,8 @@ public:
     void linearGainToPhase();
     
     void buttonClicked (Button* button) override;
-    
+    void mouseMove (const MouseEvent& e) override;
+
 private:
     std::vector<double> phaseData;
     std::vector<double> gridLineCoords;
@@ -42,5 +43,6 @@ private:
     std::unique_ptr<Label> phaseLabel;
     std::unique_ptr<Label> freqLabel;
     
+    std::unique_ptr<Label> valueLabel;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PhaseResponse)
 };
