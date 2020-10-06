@@ -70,11 +70,11 @@ void TransferFunction::paint (juce::Graphics& g)
     if (!hasYcomponent)
     {
         g.drawText ("H(z) = ", Global::margin, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5, getWidth(), 25, Justification::centredLeft, false);
-        removePowers (xEquation, true);
+        removePowers (xEquation, xEquationWithoutPowers, true);
         
         // Draw main equation (without powers)
         
-        g.drawText (xEquation, Global::margin + 65, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5, getWidth() * 1.0 / scaling,  25, Justification::centredLeft, false);
+        g.drawText (xEquationWithoutPowers, Global::margin + 65, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5, getWidth() * 1.0 / scaling,  25, Justification::centredLeft, false);
         
         // Draw powers
         g.setFont (equationFont.withHeight(16.0f));
@@ -88,30 +88,30 @@ void TransferFunction::paint (juce::Graphics& g)
         
     } else {
         
-        removePowers (xEquation, true);
-        removePowers (yEquation, false);
+        removePowers (xEquation, xEquationWithoutPowers, true);
+        removePowers (yEquation, yEquationWithoutPowers, false);
         
-        float totStringWidth = std::max (equationFont.getStringWidthFloat (xEquation), equationFont.getStringWidthFloat (yEquation));
+        float totStringWidth = std::max (equationFont.getStringWidthFloat (xEquationWithoutPowers), equationFont.getStringWidthFloat (yEquationWithoutPowers));
 
         float xPowersOffset = 0;
         float yPowersOffset = 0;
 
         // Calculate offset for numerator or denominator if the other is bigger
-        if (equationFont.getStringWidthFloat (xEquation) > equationFont.getStringWidthFloat (yEquation))
-            yPowersOffset = (equationFont.getStringWidthFloat (xEquation) + equationFont.getStringWidthFloat (yEquation)) * 0.5 - equationFont.getStringWidthFloat (yEquation);
+        if (equationFont.getStringWidthFloat (xEquation) > equationFont.getStringWidthFloat (yEquationWithoutPowers))
+            yPowersOffset = (equationFont.getStringWidthFloat (xEquationWithoutPowers) + equationFont.getStringWidthFloat (yEquationWithoutPowers)) * 0.5 - equationFont.getStringWidthFloat (yEquationWithoutPowers);
         else
-            xPowersOffset = (equationFont.getStringWidthFloat (xEquation) + equationFont.getStringWidthFloat (yEquation)) * 0.5 - equationFont.getStringWidthFloat (xEquation);
+            xPowersOffset = (equationFont.getStringWidthFloat (xEquationWithoutPowers) + equationFont.getStringWidthFloat (yEquationWithoutPowers)) * 0.5 - equationFont.getStringWidthFloat (xEquationWithoutPowers);
         
         // Draw main equation (without powers)
         g.drawText ("H(z) = ", Global::margin, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5, getWidth(), 25, Justification::centredLeft, false);
-        g.drawText(xEquation, 65 + Global::margin, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5 - 15, totStringWidth, 25, Justification::centred, false);
+        g.drawText(xEquationWithoutPowers, 65 + Global::margin, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5 - 15, totStringWidth, 25, Justification::centred, false);
         g.setColour (Colours::black);
         g.drawLine (Global::margin + 65,
                     (getHeight() + Global::margin + 12.5) * 0.5,
                     80 + totStringWidth + Global::margin,
                     (getHeight() + Global::margin + 12.5) * 0.5);
         
-        g.drawText(yEquation, Global::margin + 65, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5 + 15, totStringWidth, 25, Justification::centred, false);
+        g.drawText(yEquationWithoutPowers, Global::margin + 65, (getHeight() + Global::margin + 12.5) * 0.5 - 12.5 + 15, totStringWidth, 25, Justification::centred, false);
         
         // Draw powers
         g.setFont (equationFont.withHeight(16.0f));
@@ -150,7 +150,8 @@ void TransferFunction::calculate()
             continue;
         
         // if it is not the first entry
-        if (xEquation != "")
+        bool firstInArray = xEquation == "";
+        if (!firstInArray)
         {
             if (coefficients[i] > 0)
                 xEquation += " + ";
@@ -159,7 +160,7 @@ void TransferFunction::calculate()
         }
         
         if (i == 0 || abs(coefficients[i]) != 1)
-            xEquation += String (i == 0 ? coefficients[i] : abs (coefficients[i]));
+            xEquation += String (firstInArray ? coefficients[i] : abs (coefficients[i]));
         
         if (i != 0)
         {
@@ -204,16 +205,20 @@ void TransferFunction::calculate()
         hasYcomponent = false;
 }
 
-void TransferFunction::removePowers (String& equation, bool isX)
+void TransferFunction::removePowers (String equation, String& equationWithoutPowers, bool isX)
 {
+    equationWithoutPowers = "";
+    
     if (!equation.contains("z"))
+    {
+        equationWithoutPowers = equation;
         return;
+    }
 
     bool flag = true;
     int idx = 0;
     
     std::vector<String> parts;
-    String equationWithoutPowers = "";
     
     while (flag)
     {
@@ -244,6 +249,4 @@ void TransferFunction::removePowers (String& equation, bool isX)
         xPowersAmount = idx;
     else
         yPowersAmount = idx;
-    
-    equation = equationWithoutPowers;
 }

@@ -28,10 +28,12 @@ public:
     
     void calculate() override;
 
-    void removePowers (String& equation, bool isX);
+    void removePowers (String equation, String& equationWithoutPowers, bool isX);
 private:
     String xEquation;
     String yEquation;
+    String xEquationWithoutPowers;
+    String yEquationWithoutPowers;
 
     std::vector<int> xPowers;
     std::vector<int> yPowers;

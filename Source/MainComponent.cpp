@@ -168,8 +168,8 @@ void MainComponent::resized()
     poleZeroPlot->setBounds (middlePart.removeFromBottom (300));
     differenceEq->setBounds (middlePart.removeFromTop ((Global::initHeightWithOffset - 300) * 0.5));
     transferFunction->setBounds (middlePart);
-    blockDiagram->setBounds (rightPart.withHeight (rightPart.getHeight() * 2.0));
 
+    blockDiagram->setBounds (rightPart.withHeight (rightPart.getHeight() * 2.0));
     for (auto comp : appComponents)
         if (comp->getTitle() != "Block Diagram") // updated in the paint function
             comp->setTransform (transform);

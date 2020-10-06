@@ -67,5 +67,5 @@ void AppComponent::setCoefficients (std::vector<double>& coefficientsToSet)
 void AppComponent::refresh()
 {
     calculate();
-    repaint();
+    this->repaint();
 }
