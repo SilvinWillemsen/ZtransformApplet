@@ -93,7 +93,7 @@ void FreqResponse::paint (juce::Graphics& g)
     }
     
     //// Draw zero DB line ////
-    if (lowestDB < 0)
+    if (lowestDB < 0 && highestDB >= 0)
         g.drawLine (Global::axisMargin + Global::margin, zeroDbHeight, getWidth(), zeroDbHeight, 1.0);
 
     double plotWidth = getWidth() - (Global::axisMargin + Global::margin);
