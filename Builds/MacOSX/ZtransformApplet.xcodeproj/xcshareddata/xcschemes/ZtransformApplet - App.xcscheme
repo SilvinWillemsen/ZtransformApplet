@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A47A5D1F5348B52C6D32BCB1"
-               BuildableName = "NewProject.app"
+               BuildableName = "ZtransformApplet.app"
                BlueprintName = "ZtransformApplet - App"
                ReferencedContainer = "container:ZtransformApplet.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A47A5D1F5348B52C6D32BCB1"
-            BuildableName = "NewProject.app"
+            BuildableName = "ZtransformApplet.app"
             BlueprintName = "ZtransformApplet - App"
             ReferencedContainer = "container:ZtransformApplet.xcodeproj">
          </BuildableReference>
@@ -42,7 +42,7 @@
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -56,7 +56,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A47A5D1F5348B52C6D32BCB1"
-            BuildableName = "NewProject.app"
+            BuildableName = "ZtransformApplet.app"
             BlueprintName = "ZtransformApplet - App"
             ReferencedContainer = "container:ZtransformApplet.xcodeproj">
          </BuildableReference>
@@ -75,7 +75,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A47A5D1F5348B52C6D32BCB1"
-            BuildableName = "NewProject.app"
+            BuildableName = "ZtransformApplet.app"
             BlueprintName = "ZtransformApplet - App"
             ReferencedContainer = "container:ZtransformApplet.xcodeproj">
          </BuildableReference>
