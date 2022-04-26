@@ -12,7 +12,7 @@
 #include "FreqResponse.h"
 
 //==============================================================================
-FreqResponse::FreqResponse (double fs) : AppComponent ("Frequency Response", false), fs (fs)
+FreqResponse::FreqResponse (double fs) : AppComponent ("Magnitude Response", false), fs (fs)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.

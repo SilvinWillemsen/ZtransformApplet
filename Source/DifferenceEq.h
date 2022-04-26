@@ -27,7 +27,6 @@ public:
     void resized() override;
 
     void calculate() override;
-
 private:
     String equation;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DifferenceEq)
